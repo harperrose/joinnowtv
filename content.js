@@ -1,7 +1,7 @@
 const SITE_DATA = {
     // Links for the nav and ads
     links: {
-        twitter: "https://x.com/yourprofile",
+        instagram: "https://x.com/yourprofile",
         youtube: "https://youtube.com/c/yourchannel",
         shop: "#",
         privacy: "#"
