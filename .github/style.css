@@ -1,0 +1,44 @@
+:root {
+    /* Global Colors & Gradients */
+    --bg-dark: #050505;
+    --accent-green: #00ff9d;
+    --gradient-main: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+    --gradient-glow: radial-gradient(circle, #00ff9d33 0%, transparent 70%);
+    
+    /* Image 1 Style: Beveled Border */
+    --border-style: 3px outset #444;
+    --border-active: 3px inset #222;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.beveled-box {
+    background: var(--gradient-main);
+    border: var(--border-style);
+    padding: 10px;
+}
+
+button {
+    background: var(--gradient-main);
+    border: var(--border-style);
+    color: var(--accent-green);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+button:active {
+    border: var(--border-active);
+}
+
+/* Image 2/3 style buttons: Green Glow */
+.btn-glow {
+    box-shadow: 0 0 10px var(--accent-green);
+    border-radius: 4px;
+}
