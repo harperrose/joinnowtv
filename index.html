@@ -5,28 +5,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loader">LOADING...</div>
-    <div id="globeViz"></div>
-    
-    <a href="dashboard.html" class="enter-btn beveled-box" style="position:fixed; bottom:20px; right:20px;">
-        ENTER SITE ->
-    </a>
 
-    <script>
-        const myGlobe = Globe()
-            (document.getElementById('globeViz'))
-            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-            .backgroundColor('#000000')
-            .ringColor(() => 'red')
-            .ringMaxRadius(2)
-            .ringRepeat(3);
+<div id="loader">
+    <div class="spinner"></div>
+    <p>INITIALIZING GLOBE...</p>
+</div>
 
-        // Define Red Hotspots
-        const gData = [{ lat: 34.05, lng: -118.24, size: 1, text: 'LA' }];
-        myGlobe.ringsData(gData);
+<div id="globeViz"></div>
+<a href="dashboard.html" class="enter-btn beveled-box">ENTER SITE -></a>
 
-        // Remove loader after 2s
-        setTimeout(() => document.getElementById('loader').style.display='none', 2000);
-    </script>
+<script>
+    const myGlobe = Globe()(document.getElementById('globeViz'))
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+        .backgroundColor('#000000')
+        .onGlobeReady(() => {
+            // This hides the loader only once the globe is actually loaded
+            document.getElementById('loader').classList.add('fade-out');
+            setTimeout(() => document.getElementById('loader').remove(), 1000);
+        });
+
+    // Slow spin logic
+    let angle = 0;
+    setInterval(() => {
+        myGlobe.pointOfView({ lng: angle, lat: 0, altitude: 2.5 }, 0);
+        angle += 0.1;
+    }, 50);
+</script>
+
 </body>
 </html>

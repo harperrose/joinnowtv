@@ -1,36 +1,70 @@
 <div class="grid-container">
     <header class="beveled-box nav-row">
         <nav>
-            <a data-content="twitter" href="#">X</a>
+            <a data-content="instagram" href="#">IG</a>
             <a data-content="youtube" href="#">YT</a>
             <span>JOINNOW.TV</span>
         </nav>
     </header>
+<div class="dashboard-wrapper">
+    <header class="nav-bar beveled-box">
+        <div class="nav-links">
+            <button onclick="location.href='#'">Videos</button>
+            <button onclick="location.href='#'">Audio</button>
+        </div>
+        <h1 class="logo">JOINNOW.TV</h1>
+        <div class="nav-links">
+            <button data-content="shop">Shop</button>
+            <button data-content="privacy">Privacy / Terms</button>
+        </div>
+    </header>
 
-    <main class="main-layout">
-        <section class="beveled-box gallery-sidebar">
-            <div id="img-display"> [Image 1/7] </div>
-            <div class="controls"><button><</button><button>></button></div>
-        </section>
+    <div class="main-grid">
+        <div class="beveled-box carousel-section">
+            <img id="carousel-img" src="https://picsum.photos/id/10/200/300" alt="Gallery">
+            <div class="controls">
+                <button onclick="updateCarousel(-1)">◀</button>
+                <span id="carousel-counter">1/7</span>
+                <button onclick="updateCarousel(1)">▶</button>
+            </div>
+        </div>
 
-        <section class="center-col">
+        <div class="ads-section">
             <div class="beveled-box gif-ad">
-                <img src="vintage-ad.gif" alt="AD">
+                <span class="label">GIF AD</span>
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJia3F6Znd6Znd6Znd6/giphy.gif" alt="Ad">
             </div>
-            <div class="buy-sem-oval">BUY SEM</div>
-        </section>
+            <div class="buy-sem-oval">
+                <a href="#">Buy SEM</a>
+            </div>
+        </div>
 
-        <section class="beveled-box video-player-container">
-            <div class="camera-monitor-ui">
-                <div class="monitor-grid">
-                    <div class="cam-feed">CAM 1: NORTH FOREST</div>
-                </div>
-                <div class="playback-controls">
-                    <button>■</button><button>▶</button>
-                </div>
+        <div class="beveled-box video-section">
+            <div class="video-meta">
+                <div class="play-icons">▶ || [ ]</div>
+                <div class="now-playing">NOW PLAYING: <br> Episode 8 - SEM</div>
             </div>
-        </section>
-    </main>
+            <div class="video-container">
+                <img src="heart-sun-placeholder.jpg" style="width:100%">
+            </div>
+            <div class="video-footer">
+                <button>◀</button>
+                <span>Video description and whatnot</span>
+                <button>▶</button>
+            </div>
+        </div>
+
+        <div class="beveled-box guestbook-section">
+            <div class="section-header">Guestbook / Confessional</div>
+            <div class="comment-content">
+                [USER_404]: system breach detected... <br>
+                [ADMIN]: Welcome to the black market.
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     <footer class="beveled-box guestbook">
         <h3>Guestbook / Confessional</h3>
