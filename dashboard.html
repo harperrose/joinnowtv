@@ -20,52 +20,61 @@
             </div>
         </header>
 
-        <div class="main-grid">
-            
-            <section class="beveled-box carousel-section">
-                <div class="img-frame">
-                    <img id="carousel-img" src="https://picsum.photos/id/10/400/600" alt="Gallery">
-                </div>
-                <div class="controls">
-                    <button onclick="updateCarousel(-1)">◀</button>
-                    <span id="carousel-counter">1/7</span>
-                    <button onclick="updateCarousel(1)">▶</button>
-                </div>
-            </section>
+        <div class="flex-row">
+            <div class="flex-row">
+                 <section class="beveled-box carousel-section">
+                     <div class="img-frame">
+                         <img id="carousel-img" src="https://picsum.photos/id/10/400/600" alt="Gallery">
+                     </div>
+                     <div class="controls">
+                         <button onclick="updateCarousel(-1)">◀</button>
+                         <span id="carousel-counter">1/7</span>
+                         <button onclick="updateCarousel(1)">▶</button>
+                     </div>
+                 </section>
 
-            <section class="ads-column">
-                <div class="beveled-box gif-ad-container">
-                    <span class="label">GIF AD</span>
-                    <div class="gif-placeholder">
-                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJia3F6Znd6Znd6Znd6/giphy.gif" alt="Vintage Ad">
-                    </div>
-                </div>
-                
-                <div class="buy-sem-oval">
-                    <a href="#" data-content="sem">Buy SEM</a>
-                </div>
-            </section>
+                 <section class="flex-column">
+                     <div class="beveled-box gif-ad-container">
+                         <span class="label">GIF AD</span>
+                         <div class="gif-placeholder">
+                             <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJia3F6Znd6Znd6Znd6/giphy.gif" alt="Vintage Ad">
+                         </div>
+                     </div>
 
+                     <div class="buy-sem-oval">
+                         <a href="#" data-content="sem">Buy SEM</a>
+                     </div>
+                 </section>
+            </div>
             <section class="beveled-box video-player-themed">
-                <div class="cctv-header">
-                    <div class="playback-icons">▶ || [ ]</div>
-                    <div class="video-status">
-                        NOW PLAYING:<br>
-                        <span class="glitch-text">Episode 8 - SEM</span>
-                    </div>
-                </div>
-
-                <div class="monitor-screen">
-                    <img src="https://i.imgur.com/your-heart-sunset.jpg" alt="Video Feed" class="main-video-img">
-                    <div class="scanline"></div>
-                </div>
-
-                <div class="video-footer-nav">
-                    <button class="arrow-btn">◀</button>
-                    <span class="desc-text">Video description and whatnot</span>
-                    <button class="arrow-btn">▶</button>
-                </div>
-            </section>
+              <div class="cctv-header">
+                  <div class="playback-icons">▶ || [ ]</div>
+                  <div class="video-status">
+                      NOW PLAYING:<br>
+                      <span class="glitch-text" id="video-title">Episode 8 - SEM</span>
+                  </div>
+              </div>
+          
+              <div class="monitor-screen">
+                  <div class="iframe-container">
+                      <iframe 
+                          id="main-video"
+                          src="https://www.youtube.com/embed/VIDEO_ID_HERE?autoplay=1&mute=1&controls=0&loop=1" 
+                          title="YouTube video player" 
+                          frameborder="0" 
+                  
+                          allowfullscreen>
+                      </iframe>
+                  </div>
+                  <div class="scanline"></div>
+              </div>
+          
+              <div class="video-footer-nav">
+                  <button class="arrow-btn" onclick="prevVideo()">◀</button>
+                  <span class="desc-text" id="video-desc">Video description and whatnot</span>
+                  <button class="arrow-btn" onclick="nextVideo()">▶</button>
+              </div>
+          </section>
 
             <section class="beveled-box guestbook-section">
                 <div class="section-header">Guestbook / Confessional</div>
