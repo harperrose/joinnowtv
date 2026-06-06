@@ -20,11 +20,11 @@
             </div>
         </header>
 
-        <div class="flex-row">
-            <div class="flex-row">
+        <div class="main-grid">
+            <div>
                  <section class="beveled-box carousel-section">
                      <div class="img-frame">
-                         <img id="carousel-img" src="https://picsum.photos/id/10/400/600" alt="Gallery">
+                         <img id="carousel-img" src="https://d2w9rnfcy7mm78.cloudfront.net/6431323/original_366950bc1e8702e21c413b0ba4e43fef.jpg?1583967729?bc=0" alt="Gallery">
                      </div>
                      <div class="controls">
                          <button onclick="updateCarousel(-1)">◀</button>
@@ -35,15 +35,12 @@
 
                  <section class="flex-column">
                      <div class="beveled-box gif-ad-container">
-                         <span class="label">GIF AD</span>
                          <div class="gif-placeholder">
-                             <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJia3F6Znd6Znd6Znd6/giphy.gif" alt="Vintage Ad">
+                             <img src="https://d2w9rnfcy7mm78.cloudfront.net/29009179/original_9a9e71920be59e4b74b2b17070549f60.gif?1719336017?bc=0" alt="Vintage Ad">
                          </div>
                      </div>
 
-                     <div class="buy-sem-oval">
-                         <a href="#" data-content="sem">Buy SEM</a>
-                     </div>
+                    
                  </section>
             </div>
             <section class="beveled-box video-player-themed">
@@ -58,13 +55,14 @@
               <div class="monitor-screen">
                   <div class="iframe-container">
                       <iframe 
-                          id="main-video"
-                          src="https://www.youtube.com/embed/VIDEO_ID_HERE?autoplay=1&mute=1&controls=0&loop=1" 
-                          title="YouTube video player" 
-                          frameborder="0" 
-                  
-                          allowfullscreen>
-                      </iframe>
+                      width="560" 
+                      height="315" 
+                      src="https://www.youtube.com/embed/7E7cN5-5jbE?si=0Ck0EZAe-_P1rgSV" 
+                      title="YouTube video player" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      referrerpolicy="strict-origin-when-cross-origin" 
+                      allowfullscreen></iframe>
                   </div>
                   <div class="scanline"></div>
               </div>
@@ -74,6 +72,9 @@
                   <span class="desc-text" id="video-desc">Video description and whatnot</span>
                   <button class="arrow-btn" onclick="nextVideo()">▶</button>
               </div>
+               <div class="buy-sem-oval">
+                         <a href="#" data-content="sem">Buy SEM</a>
+                     </div>
           </section>
 
             <section class="beveled-box guestbook-section">
@@ -90,13 +91,13 @@
     <script>
         // Inline Carousel logic if not in content.js
         const images = [
-            "https://picsum.photos/id/10/400/600",
-            "https://picsum.photos/id/11/400/600",
-            "https://picsum.photos/id/12/400/600",
+            "https://d2w9rnfcy7mm78.cloudfront.net/6431323/original_366950bc1e8702e21c413b0ba4e43fef.jpg?1583967729?bc=0",
+            "https://d2w9rnfcy7mm78.cloudfront.net/16464435/original_66e2f0b19761f8dbed5f09dd84fcbdd1.jpg?1652549774?bc=0",
+            "https://d2w9rnfcy7mm78.cloudfront.net/15648911/original_6f7630be095417f8b28f8ab4bf767b3e.jpg?1647640496?bc=0",
+            "https://d2w9rnfcy7mm78.cloudfront.net/15648938/original_4f724f1842e943858838c5715404ecc9.jpg?1647640668?bc=0",
             "https://picsum.photos/id/13/400/600",
             "https://picsum.photos/id/14/400/600",
             "https://picsum.photos/id/15/400/600",
-            "https://picsum.photos/id/16/400/600"
         ];
         let idx = 0;
         function updateCarousel(dir) {
