@@ -8,6 +8,10 @@ const SITE_DATA = {
     },
     // Images for the 1/7 Carousel
     carousel: [
+        "images/AD-1.JPG",
+        "images/AD-2.PNG",
+        "images/AD-3.png",
+        "images/publicaccess.gif",
         "https://picsum.photos/id/10/200/300",
         "https://picsum.photos/id/20/200/300",
         "https://picsum.photos/id/30/200/300",
