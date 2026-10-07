@@ -162,8 +162,7 @@ img, video, iframe {
 
 body.opening-home #fisheyeStage {
     opacity: 0;
-    transform: scale(1.4);
-    transition: opacity 0.85s ease, transform 0.85s ease;
+    transition: opacity 0.7s ease;
 }
 
 body.opening-home #enterSite {
