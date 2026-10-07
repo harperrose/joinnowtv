@@ -1,35 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <script src="//unpkg.com/globe.gl"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <title>JOINNOW.TV</title>
 </head>
-<body>
+<body class="landing-page">
 
-<div id="loader">
-    <div class="spinner"></div>
-    <p>LOADING...</p>
-</div>
+<div id="fisheyeStage" aria-hidden="false"></div>
 
-<div id="globeViz"></div>
-<a href="dashboard.html" class="fixed-item beveled-box">ENTER SITE -></a>
+<a href="dashboard.html" class="fixed-item glass-btn" id="enterSite">ENTER SITE →</a>
 
+<script src="fisheye.js"></script>
 <script>
-    const myGlobe = Globe()(document.getElementById('globeViz'))
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .backgroundColor('#000000')
-        .onGlobeReady(() => {
-            // This hides the loader only once the globe is actually loaded
-            document.getElementById('loader').classList.add('fade-out');
-            setTimeout(() => document.getElementById('loader').remove(), 1000);
-        });
+    const HOME = 'dashboard.html';
 
-    // Slow spin logic
-    let angle = 0;
-    setInterval(() => {
-        myGlobe.pointOfView({ lng: angle, lat: 0, altitude: 2.5 }, 0);
-        angle += 0.1;
-    }, 50);
+    function openHome() {
+        if (document.body.classList.contains('opening-home')) return;
+        document.body.classList.add('opening-home');
+        setTimeout(() => { window.location.href = HOME; }, 900);
+    }
+
+    document.getElementById('enterSite').addEventListener('click', (e) => {
+        e.preventDefault();
+        openHome();
+    });
+
+    startFisheye({ text: 'JOIN NOW TV' });
+    // Marquee plays, then opens into home (?stay=1 keeps the lens up)
+    if (!new URLSearchParams(location.search).has('stay')) {
+        setTimeout(openHome, 5600);
+    }
 </script>
 
 </body>

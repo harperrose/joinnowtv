@@ -4,104 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>JOINNOW.TV - Dashboard</title>
+    <title>JOINNOW.TV — Home</title>
 </head>
-<body>
+<body class="home-page">
     <div class="dashboard-wrapper">
-        <header class="nav-bar beveled-box">
-            <div class="nav-links">
-                <button class="nav-btn">Videos</button>
-                <button class="nav-btn">Audio</button>
-            </div>
-            <h1 class="logo">JOINNOW.TV</h1>
-            <div class="nav-links">
-                <button class="nav-btn" data-content="shop">Shop</button>
-                <button class="nav-btn" data-content="privacy">privacy / terms / help</button>
-            </div>
+        <header class="top-media-bar" role="tablist" aria-label="Media types">
+            <button type="button" class="glass-btn media-tab is-active" data-media="video" role="tab" aria-selected="true">Video</button>
+            <button type="button" class="glass-btn media-tab" data-media="audio" role="tab" aria-selected="false">Audio</button>
+            <button type="button" class="glass-btn media-tab" data-media="live" role="tab" aria-selected="false">Live</button>
+            <button type="button" class="glass-btn media-tab" data-media="shop" role="tab" aria-selected="false">Shop</button>
+            <button type="button" class="glass-btn media-tab" data-media="archive" role="tab" aria-selected="false">Archive</button>
+            <div class="top-media-spacer"></div>
+            <button type="button" class="glass-btn" id="edit-rail-btn">Edit Images</button>
         </header>
 
-        <div class="main-grid">
-            <div>
-                 <section class="beveled-box carousel-section">
-                     <div class="img-frame">
-                         <img id="carousel-img" src="https://d2w9rnfcy7mm78.cloudfront.net/6431323/original_366950bc1e8702e21c413b0ba4e43fef.jpg?1583967729?bc=0" alt="Gallery">
-                     </div>
-                     <div class="controls">
-                         <button onclick="updateCarousel(-1)">◀</button>
-                         <span id="carousel-counter">1/7</span>
-                         <button onclick="updateCarousel(1)">▶</button>
-                     </div>
-                 </section>
+        <div class="home-layout">
+            <aside class="image-rail glass-panel" id="image-rail" aria-label="Image rail"></aside>
 
-                 <section class="flex-column">
-                     <div class="beveled-box gif-ad-container">
-                         <div class="gif-placeholder">
-                             <img src="https://d2w9rnfcy7mm78.cloudfront.net/29009179/original_9a9e71920be59e4b74b2b17070549f60.gif?1719336017?bc=0" alt="Vintage Ad">
-                         </div>
-                     </div>
+            <main class="home-main">
+                <section class="glass-panel video-panel" data-panel="video">
+                    <div class="panel-meta glass-text">
+                        <span class="playback-icons">▶</span>
+                        <div class="video-status">
+                            <span class="meta-label">NOW PLAYING</span>
+                            <span class="glitch-text" id="video-title">Episode 8 — SEM</span>
+                        </div>
+                    </div>
 
-                    
-                 </section>
-            </div>
-            <section class="beveled-box video-player-themed">
-              <div class="cctv-header">
-                  <div class="playback-icons">▶ || [ ]</div>
-                  <div class="video-status">
-                      NOW PLAYING:<br>
-                      <span class="glitch-text" id="video-title">Episode 8 - SEM</span>
-                  </div>
-              </div>
-          
-              <div class="monitor-screen">
-                  <div class="iframe-container">
-                      <iframe 
-                      width="560" 
-                      height="315" 
-                      src="https://www.youtube.com/embed/7E7cN5-5jbE?si=0Ck0EZAe-_P1rgSV" 
-                      title="YouTube video player" 
-                      frameborder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                      referrerpolicy="strict-origin-when-cross-origin" 
-                      allowfullscreen></iframe>
-                  </div>
-                  <div class="scanline"></div>
-              </div>
-          
-              <div class="video-footer-nav">
-                  <button class="arrow-btn" onclick="prevVideo()">◀</button>
-                  <span class="desc-text" id="video-desc">Video description and whatnot</span>
-                  <button class="arrow-btn" onclick="nextVideo()">▶</button>
-              </div>
-               <div class="buy-sem-oval">
-                         <a href="#" data-content="sem">Buy SEM</a>
-                     </div>
-          </section>
+                    <div class="monitor-screen">
+                        <div class="iframe-container">
+                            <iframe
+                                id="video-frame"
+                                src="https://www.youtube.com/embed/7E7cN5-5jbE"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen></iframe>
+                        </div>
+                    </div>
 
-            <section class="beveled-box guestbook-section">
-                <div class="section-header">Guestbook / Confessional</div>
-                <div class="comment-wall" id="guestbook">
-                    <p><span class="user-id">[USER_88]:</span> site looks clean.</p>
-                    <p><span class="user-id">[SYSTEM]:</span> welcoming new terminal...</p>
-                </div>
-            </section>
+                    <p class="desc-text glass-text" id="video-desc">Video description and whatnot</p>
+                </section>
+
+                <section class="glass-panel chat-room" data-panel="chat">
+                    <div class="section-header">Chat Room</div>
+                    <div class="comment-wall glass-text" id="chat-wall">
+                        <p><span class="user-id">[SYSTEM]:</span> channel open. say something.</p>
+                        <p><span class="user-id">[USER_88]:</span> site looks clean.</p>
+                    </div>
+                    <form class="chat-form" id="chat-form">
+                        <input class="glass-input" id="chat-input" type="text" maxlength="240" placeholder="type a message..." autocomplete="off">
+                        <button class="glass-btn" type="submit">Send</button>
+                    </form>
+                </section>
+
+                <section class="glass-panel media-placeholder" data-panel="audio" hidden>
+                    <div class="glass-text placeholder-copy">Audio deck coming online.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="live" hidden>
+                    <div class="glass-text placeholder-copy">Live feed standby.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="shop" hidden>
+                    <div class="glass-text placeholder-copy">Shop shelf empty — check back.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="archive" hidden>
+                    <div class="glass-text placeholder-copy">Archive stacks sealed.</div>
+                </section>
+            </main>
         </div>
     </div>
 
+    <div id="rail-editor" class="rail-editor" hidden aria-hidden="true">
+        <form id="rail-editor-form" class="rail-editor-panel glass-panel">
+            <h2>Edit left rail images</h2>
+            <p class="rail-editor-help">Paste image URLs for the 5 slots. Saved in this browser.</p>
+            <label>1 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>2 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>3 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>4 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>5 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <div class="rail-editor-actions">
+                <button type="button" class="glass-btn" id="rail-editor-reset">Reset defaults</button>
+                <button type="button" class="glass-btn" id="rail-editor-cancel">Cancel</button>
+                <button type="submit" class="glass-btn">Save</button>
+            </div>
+        </form>
+    </div>
+
     <script src="content.js"></script>
-    <script>
-        // Inline Carousel logic if not in content.js
-        const images = [
-             "images/AD-1.JPG",
-            "images/AD-2.PNG",
-            "images/AD-3.png",
-            "images/publicaccess.gif",
-        ];
-        let idx = 0;
-        function updateCarousel(dir) {
-            idx = (idx + dir + images.length) % images.length;
-            document.getElementById('carousel-img').src = images[idx];
-            document.getElementById('carousel-counter').innerText = `${idx + 1}/7`;
-        }
-    </script>
 </body>
 </html>
