@@ -242,6 +242,94 @@
     return el;
   }
 
+  function startFisheye2D(root, canvas, text) {
+    const marquee = buildMarqueeTexture(text);
+    const mctx = marquee.getContext('2d');
+    const mdata = mctx.getImageData(0, 0, marquee.width, marquee.height);
+    const mw = marquee.width;
+    const mh = marquee.height;
+
+    let scroll = 0;
+    let raf = 0;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const rect = root.getBoundingClientRect();
+      // Render at half res for speed, CSS scales up
+      const w = Math.max(1, Math.floor(rect.width * dpr * 0.38));
+      const h = Math.max(1, Math.floor(rect.height * dpr * 0.38));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+    }
+
+    function sample(u, v) {
+      let x = Math.floor(((u % 1) + 1) % 1 * (mw - 1));
+      let y = Math.floor(Math.min(Math.max(v, 0), 1) * (mh - 1));
+      const i = (y * mw + x) * 4;
+      return mdata.data[i];
+    }
+
+    function frame() {
+      resize();
+      const w = canvas.width;
+      const h = canvas.height;
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(w, h);
+      const out = img.data;
+      scroll -= 0.0045;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const uvx = x / (w - 1);
+          const uvy = y / (h - 1);
+          let px = uvx * 2 - 1;
+          let py = uvy * 2 - 1;
+          px *= 1.12;
+          py *= 1.48;
+          const r = Math.hypot(px, py);
+          const o = (y * w + x) * 4;
+          if (r > 1.01) {
+            out[o + 3] = 0;
+            continue;
+          }
+          const z = Math.sqrt(Math.max(1 - r * r, 0));
+          const k = 1 / (0.55 + z * 0.9);
+          const wx = px * k;
+          const wy = py * k;
+          const tu = wx * 0.22 + 0.5 + scroll;
+          const tv = Math.min(Math.max(wy * 0.48 + 0.5, 0.08), 0.92);
+
+          // LED grid
+          const cell = 42 + z * 28;
+          const gx = ((uvx * w) / h) * cell;
+          const gy = uvy * cell;
+          const cx = gx - Math.floor(gx) - 0.5;
+          const cy = gy - Math.floor(gy) - 0.5;
+          const led = Math.max(0, 1 - Math.hypot(cx, cy) * 2.4);
+
+          const lit = sample(tu, tv) / 255;
+          const aR = 1.0, aG = 0.55 + lit * 0.4, aB = 0.1 + lit * 0.5;
+          const base = 0.08 * led;
+          const glow = lit * (0.45 + led * 1.3);
+          // soft glass highlight
+          const sheet = Math.pow(Math.max(1 - Math.abs(py + 0.15) * 1.4, 0), 3) * 0.14;
+
+          out[o] = Math.min(255, (base + aR * glow + sheet) * 255);
+          out[o + 1] = Math.min(255, (base + aG * glow + sheet) * 255);
+          out[o + 2] = Math.min(255, (base * 1.2 + aB * glow + sheet * 1.1) * 255);
+          out[o + 3] = Math.floor((1 - Math.max(0, (r - 0.96) / 0.05)) * 255);
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      raf = requestAnimationFrame(frame);
+    }
+
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }
+
   window.startFisheye = function startFisheye(options = {}) {
     const root = document.getElementById(options.rootId || 'fisheyeStage');
     if (!root) return;
@@ -255,15 +343,23 @@
     root.appendChild(createGlassOverlay());
     root.appendChild(createBezelSVG());
 
-    const gl = canvas.getContext('webgl', {
-      alpha: true,
-      antialias: false,
-      premultipliedAlpha: false,
-    });
+    const gl =
+      canvas.getContext('webgl', {
+        alpha: true,
+        antialias: false,
+        premultipliedAlpha: false,
+      }) ||
+      canvas.getContext('experimental-webgl', {
+        alpha: true,
+        antialias: false,
+        premultipliedAlpha: false,
+      });
+
+    requestAnimationFrame(() => root.classList.add('is-active'));
+
     if (!gl) {
-      root.classList.add('is-fallback');
-      root.textContent = text;
-      return;
+      root.classList.add('is-canvas2d');
+      return startFisheye2D(root, canvas, text);
     }
 
     const program = createProgram(gl, VERT, FRAG);
