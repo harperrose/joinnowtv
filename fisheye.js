@@ -25,28 +25,26 @@
     vec2 fisheyeUV(vec2 uv, out float mask, out float rim) {
       vec2 p = uv * 2.0 - 1.0;
       // Wide horizontal oval
-      p.x *= 1.15;
-      p.y *= 1.55;
+      p.x *= 1.12;
+      p.y *= 1.48;
 
       float r = length(p);
-      mask = smoothstep(1.02, 0.96, r);
-      rim = smoothstep(0.88, 1.0, r) * mask;
+      mask = smoothstep(1.02, 0.97, r);
+      rim = smoothstep(0.86, 1.0, r) * mask;
 
       if (r > 1.05) {
         return vec2(-1.0);
       }
 
-      // Orthographic sphere → planar sample (bulge toward viewer)
+      // Barrel / dome: center magnifies, rim compresses
       float z = sqrt(max(1.0 - r * r, 0.0));
-      vec3 n = normalize(vec3(p, z * 1.35));
-      // Stereographic-ish unwrap so center magnifies and edges compress
-      float k = 1.0 / (n.z + 0.35);
-      vec2 warped = n.xy * k;
+      float k = 1.0 / (0.55 + z * 0.9);
+      vec2 warped = p * k * 0.38;
 
-      // Remap into texture space; scroll horizontally
-      vec2 tex = warped * 0.42 + 0.5;
-      tex.x = tex.x + u_scroll;
-      tex.y = clamp(tex.y, 0.0, 1.0);
+      vec2 tex;
+      tex.x = warped.x + 0.5 + u_scroll;
+      // Keep text band tall and centered in the lens
+      tex.y = clamp(warped.y * 0.85 + 0.5, 0.02, 0.98);
       return tex;
     }
 
@@ -73,10 +71,10 @@
       vec2 cell = fract(gridUV * cellScale);
       float led = smoothstep(0.48, 0.18, length(cell - 0.5));
 
-      // Sample scrolling text (wrap X); slight vertical squash toward mid band
-      vec2 sampleUV = vec2(fract(tuv.x), clamp((tuv.y - 0.5) * 1.15 + 0.5, 0.0, 1.0));
+      // Sample scrolling text (manual wrap — texture is CLAMP)
+      vec2 sampleUV = vec2(fract(tuv.x), tuv.y);
       vec4 src = texture2D(u_tex, sampleUV);
-      float lit = clamp(src.r * 1.35, 0.0, 1.0);
+      float lit = clamp(max(src.r, max(src.g, src.b)) * 1.5, 0.0, 1.0);
 
       vec3 amberCore = vec3(1.0, 0.95, 0.62);
       vec3 amberGlow = vec3(1.0, 0.52, 0.05);
@@ -130,29 +128,36 @@
     return p;
   }
 
+  function nextPow2(n) {
+    let p = 1;
+    while (p < n) p <<= 1;
+    return p;
+  }
+
   function buildMarqueeTexture(text) {
     const canvas = document.createElement('canvas');
     const h = 256;
     const ctx = canvas.getContext('2d');
-    const phrase = `${text}   ${text}   `;
+    const phrase = `${text}   ${text}   ${text}   `;
 
-    ctx.font = '700 150px "Courier New", Courier, monospace';
-    const tw = Math.ceil(ctx.measureText(phrase).width);
-    canvas.width = Math.max(2048, tw + 80);
-    canvas.height = h;
+    ctx.font = '700 160px "Courier New", Courier, monospace';
+    const tw = Math.ceil(ctx.measureText(phrase).width) + 64;
+    // WebGL1 needs POT for reliable sampling
+    canvas.width = nextPow2(Math.max(2048, tw));
+    canvas.height = 256;
 
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = '700 150px "Courier New", Courier, monospace';
+    ctx.font = '700 160px "Courier New", Courier, monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fff';
-    ctx.shadowColor = 'rgba(255,255,255,0.9)';
-    ctx.shadowBlur = 18;
-    ctx.fillText(phrase, 40, h / 2 + 8);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 22;
+    ctx.fillText(phrase, 32, h / 2 + 6);
     ctx.shadowBlur = 0;
-    ctx.fillText(phrase, 40, h / 2 + 8);
+    ctx.fillText(phrase, 32, h / 2 + 6);
 
     return canvas;
   }
@@ -303,7 +308,7 @@
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -334,7 +339,7 @@
     function frame(now) {
       resize();
       const t = (now - t0) / 1000;
-      scroll -= 0.045 * (1 / 60); // ~seamless marquee speed
+      scroll -= 0.12 * (1 / 60); // marquee speed
       gl.uniform1f(uniforms.u_time, t);
       gl.uniform1f(uniforms.u_scroll, scroll);
       gl.clearColor(0, 0, 0, 0);
