@@ -61,52 +61,49 @@
         return;
       }
 
-      // LED grid in screen space (follows curvature via warped density)
       vec2 p = uv * 2.0 - 1.0;
       p.x *= 1.15;
       p.y *= 1.55;
       float r = length(p);
       float z = sqrt(max(1.0 - r * r, 0.0));
-      float cellScale = mix(90.0, 42.0, z); // denser at edges
+
+      // LED grid denser toward rim
+      float cellScale = mix(78.0, 38.0, z);
       vec2 gridUV = uv * u_res / u_res.y;
       vec2 cell = fract(gridUV * cellScale);
-      float led = smoothstep(0.42, 0.22, length(cell - 0.5));
+      float led = smoothstep(0.48, 0.18, length(cell - 0.5));
 
-      // Sample scrolling text (wrap X)
-      vec2 sampleUV = vec2(fract(tuv.x), tuv.y);
+      // Sample scrolling text (wrap X); slight vertical squash toward mid band
+      vec2 sampleUV = vec2(fract(tuv.x), clamp((tuv.y - 0.5) * 1.15 + 0.5, 0.0, 1.0));
       vec4 src = texture2D(u_tex, sampleUV);
+      float lit = clamp(src.r * 1.35, 0.0, 1.0);
 
-      // Amber LED palette
-      float lit = src.r;
-      vec3 amberCore = vec3(1.0, 0.92, 0.55);
-      vec3 amberGlow = vec3(1.0, 0.55, 0.08);
-      vec3 col = mix(amberGlow, amberCore, lit) * lit;
+      vec3 amberCore = vec3(1.0, 0.95, 0.62);
+      vec3 amberGlow = vec3(1.0, 0.52, 0.05);
 
-      // Soft bloom bleed into neighbors
-      float bloom = lit * 0.55;
-      col += amberGlow * bloom * 0.65;
+      // Base unlit matrix
+      vec3 col = vec3(0.09, 0.07, 0.04) * led;
 
-      // Unlit matrix dots (barely visible)
-      vec3 matrix = vec3(0.07, 0.06, 0.045) * led;
-      col = matrix + col * led * (0.55 + lit * 1.6);
-      col += amberGlow * lit * led * 0.35;
+      // Lit LEDs + bloom
+      col += mix(amberGlow, amberCore, lit) * lit * mix(0.35, 1.0, led) * 1.8;
+      col += amberGlow * lit * 0.55; // soft bloom bleed past grid
 
       // Glass speculars on the dome
       vec2 hl = p - vec2(-0.15, -0.55);
-      float spec1 = pow(max(1.0 - length(hl) * 1.1, 0.0), 6.0) * 0.22;
+      float spec1 = pow(max(1.0 - length(hl) * 1.1, 0.0), 6.0) * 0.2;
       vec2 hl2 = p - vec2(0.35, 0.4);
-      float spec2 = pow(max(1.0 - length(hl2) * 1.4, 0.0), 8.0) * 0.1;
+      float spec2 = pow(max(1.0 - length(hl2) * 1.4, 0.0), 8.0) * 0.08;
       col += vec3(spec1 + spec2);
 
       // Inner rim light catch
-      col += vec3(0.35, 0.2, 0.05) * rim * (0.15 + lit * 0.5);
+      col += vec3(0.4, 0.22, 0.05) * rim * (0.12 + lit * 0.55);
 
       // Fine grain
-      float g = (hash(uv * u_res + u_time * 40.0) - 0.5) * 0.06;
+      float g = (hash(uv * u_res + u_time * 40.0) - 0.5) * 0.05;
       col += g;
 
       // Vignette inside the dome
-      col *= mix(1.0, 0.72, smoothstep(0.35, 1.0, r));
+      col *= mix(1.0, 0.78, smoothstep(0.4, 1.0, r));
 
       gl_FragColor = vec4(col, mask);
     }
@@ -137,31 +134,25 @@
     const canvas = document.createElement('canvas');
     const h = 256;
     const ctx = canvas.getContext('2d');
+    const phrase = `${text}   ${text}   `;
 
-    // Measure with pixel-ish bold sans
-    ctx.font = 'bold 140px "Courier New", Courier, monospace';
-    const pad = 180;
-    const tw = Math.ceil(ctx.measureText(text).width);
-    canvas.width = Math.max(1024, tw + pad * 2);
+    ctx.font = '700 150px "Courier New", Courier, monospace';
+    const tw = Math.ceil(ctx.measureText(phrase).width);
+    canvas.width = Math.max(2048, tw + 80);
     canvas.height = h;
 
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // LED-style block lettering
-    ctx.font = 'bold 140px "Courier New", Courier, monospace';
-    ctx.textAlign = 'center';
+    ctx.font = '700 150px "Courier New", Courier, monospace';
+    ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#fff';
-    ctx.shadowColor = '#fff';
-    ctx.shadowBlur = 12;
-    ctx.fillText(text, canvas.width / 2, h / 2 + 6);
-
-    // Soft duplicate for bloom body
+    ctx.shadowColor = 'rgba(255,255,255,0.9)';
+    ctx.shadowBlur = 18;
+    ctx.fillText(phrase, 40, h / 2 + 8);
     ctx.shadowBlur = 0;
-    ctx.globalAlpha = 0.85;
-    ctx.fillText(text, canvas.width / 2, h / 2 + 6);
-    ctx.globalAlpha = 1;
+    ctx.fillText(phrase, 40, h / 2 + 8);
 
     return canvas;
   }
@@ -190,22 +181,23 @@
     `;
     svg.appendChild(defs);
 
-    // Outer shell
-    const outer = document.createElementNS(ns, 'ellipse');
-    outer.setAttribute('cx', '500');
-    outer.setAttribute('cy', '310');
-    outer.setAttribute('rx', '490');
-    outer.setAttribute('ry', '300');
-    outer.setAttribute('fill', 'url(#bezelGrad)');
-    svg.appendChild(outer);
+    // Ring frame only — inner hole stays transparent so the canvas shows through
+    const ring = document.createElementNS(ns, 'path');
+    ring.setAttribute(
+      'd',
+      'M500,10 A490,300 0 1,0 500,610 A490,300 0 1,0 500,10 Z M500,42 A455,268 0 1,1 500,578 A455,268 0 1,1 500,42 Z'
+    );
+    ring.setAttribute('fill', 'url(#bezelGrad)');
+    ring.setAttribute('fill-rule', 'evenodd');
+    svg.appendChild(ring);
 
-    // Inner recess
+    // Inner lip
     const inner = document.createElementNS(ns, 'ellipse');
     inner.setAttribute('cx', '500');
     inner.setAttribute('cy', '310');
     inner.setAttribute('rx', '455');
     inner.setAttribute('ry', '268');
-    inner.setAttribute('fill', '#000');
+    inner.setAttribute('fill', 'none');
     inner.setAttribute('stroke', '#1a1a1a');
     inner.setAttribute('stroke-width', '6');
     svg.appendChild(inner);
