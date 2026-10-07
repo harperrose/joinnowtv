@@ -169,10 +169,10 @@
     const defs = document.createElementNS(ns, 'defs');
     defs.innerHTML = `
       <linearGradient id="glassRing" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
-        <stop offset="35%" stop-color="#dfe7f5" stop-opacity="0.22"/>
-        <stop offset="70%" stop-color="#8a94a8" stop-opacity="0.18"/>
-        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.72"/>
+        <stop offset="28%" stop-color="#e8eef8" stop-opacity="0.38"/>
+        <stop offset="62%" stop-color="#c5cede" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.42"/>
       </linearGradient>
       <linearGradient id="glassEdge" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
