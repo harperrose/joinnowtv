@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="//unpkg.com/globe.gl"></script>
     <link rel="stylesheet" href="style.css">
+    <title>JOINNOW.TV</title>
 </head>
 <body>
 
@@ -12,19 +15,29 @@
 </div>
 
 <div id="globeViz"></div>
+
+<div id="fisheyeStage" aria-hidden="true"></div>
+
 <a href="dashboard.html" class="fixed-item beveled-box">ENTER SITE -></a>
 
+<script src="fisheye.js"></script>
 <script>
     const myGlobe = Globe()(document.getElementById('globeViz'))
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
         .backgroundColor('#000000')
         .onGlobeReady(() => {
-            // This hides the loader only once the globe is actually loaded
             document.getElementById('loader').classList.add('fade-out');
             setTimeout(() => document.getElementById('loader').remove(), 1000);
+
+            // Keep the globe spinning, then bring the fisheye lens in after
+            setTimeout(() => {
+                const stage = document.getElementById('fisheyeStage');
+                stage.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('fisheye-on');
+                startFisheye({ text: 'JOIN NOW TV   ★   ' });
+            }, 2200);
         });
 
-    // Slow spin logic
     let angle = 0;
     setInterval(() => {
         myGlobe.pointOfView({ lng: angle, lat: 0, altitude: 2.5 }, 0);
