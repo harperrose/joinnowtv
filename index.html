@@ -18,10 +18,22 @@
 
 <div id="fisheyeStage" aria-hidden="true"></div>
 
-<a href="dashboard.html" class="fixed-item beveled-box">ENTER SITE -></a>
+<a href="dashboard.html" class="fixed-item beveled-box" id="enterSite">ENTER SITE -></a>
 
 <script src="fisheye.js"></script>
 <script>
+    const HOME = 'dashboard.html';
+
+    function openHome() {
+        document.body.classList.add('opening-home');
+        setTimeout(() => { window.location.href = HOME; }, 900);
+    }
+
+    document.getElementById('enterSite').addEventListener('click', (e) => {
+        e.preventDefault();
+        openHome();
+    });
+
     const myGlobe = Globe()(document.getElementById('globeViz'))
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
         .backgroundColor('#000000')
@@ -29,12 +41,14 @@
             document.getElementById('loader').classList.add('fade-out');
             setTimeout(() => document.getElementById('loader').remove(), 1000);
 
-            // Keep the globe spinning, then bring the fisheye lens in after
+            // Globe first, then fisheye marquee, then open home
             setTimeout(() => {
                 const stage = document.getElementById('fisheyeStage');
                 stage.setAttribute('aria-hidden', 'false');
                 document.body.classList.add('fisheye-on');
-                startFisheye({ text: 'JOIN NOW TV   ★   ' });
+                startFisheye({ text: 'JOIN NOW TV' });
+
+                setTimeout(openHome, 5200);
             }, 2200);
         });
 

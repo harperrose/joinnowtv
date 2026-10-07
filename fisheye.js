@@ -39,12 +39,13 @@
       // Barrel / dome: center magnifies, rim compresses
       float z = sqrt(max(1.0 - r * r, 0.0));
       float k = 1.0 / (0.55 + z * 0.9);
-      vec2 warped = p * k * 0.38;
+      vec2 warped = p * k;
 
       vec2 tex;
-      tex.x = warped.x + 0.5 + u_scroll;
-      // Keep text band tall and centered in the lens
-      tex.y = clamp(warped.y * 0.85 + 0.5, 0.02, 0.98);
+      // Wider horizontal sample so stretched letters stay readable
+      tex.x = warped.x * 0.28 + 0.5 + u_scroll;
+      // Gentler vertical sample — text is drawn short+wide in the atlas
+      tex.y = clamp(warped.y * 0.55 + 0.5, 0.05, 0.95);
       return tex;
     }
 
@@ -138,26 +139,34 @@
     const canvas = document.createElement('canvas');
     const h = 256;
     const ctx = canvas.getContext('2d');
-    const phrase = `${text}   ${text}   ${text}   `;
+    // Extra spaces keep glyphs airy when the dome stretches them up
+    const phrase = `${text}     ${text}     ${text}     `;
 
-    ctx.font = '700 160px "Courier New", Courier, monospace';
-    const tw = Math.ceil(ctx.measureText(phrase).width) + 64;
+    ctx.font = '700 120px "Courier New", Courier, monospace';
+    ctx.letterSpacing = '0.18em';
+    const tw = Math.ceil(ctx.measureText(phrase).width) + 80;
     // WebGL1 needs POT for reliable sampling
-    canvas.width = nextPow2(Math.max(2048, tw));
+    canvas.width = nextPow2(Math.max(2048, Math.ceil(tw * 1.55)));
     canvas.height = 256;
 
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = '700 160px "Courier New", Courier, monospace';
+    // Draw short + wide glyphs so vertical fisheye stretch stays legible
+    ctx.save();
+    ctx.translate(40, h / 2);
+    ctx.scale(1.55, 0.72);
+    ctx.font = '700 120px "Courier New", Courier, monospace';
+    ctx.letterSpacing = '0.18em';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
     ctx.shadowColor = '#ffffff';
-    ctx.shadowBlur = 22;
-    ctx.fillText(phrase, 32, h / 2 + 6);
+    ctx.shadowBlur = 18;
+    ctx.fillText(phrase, 0, 0);
     ctx.shadowBlur = 0;
-    ctx.fillText(phrase, 32, h / 2 + 6);
+    ctx.fillText(phrase, 0, 0);
+    ctx.restore();
 
     return canvas;
   }

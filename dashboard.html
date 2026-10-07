@@ -4,107 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>JOINNOW.TV - Dashboard</title>
+    <title>JOINNOW.TV — Home</title>
 </head>
-<body>
+<body class="home-page">
     <div class="dashboard-wrapper">
         <header class="nav-bar beveled-box">
             <div class="nav-links">
-                <button class="nav-btn">Videos</button>
-                <button class="nav-btn">Audio</button>
+                <span class="nav-mark">JOINNOW.TV</span>
             </div>
-            <h1 class="logo">JOINNOW.TV</h1>
+            <h1 class="logo">HOME</h1>
             <div class="nav-links">
-                <button class="nav-btn" data-content="shop">Shop</button>
-                <button class="nav-btn" data-content="privacy">privacy / terms / help</button>
+                <button type="button" class="nav-btn" id="edit-rail-btn">Edit Images</button>
             </div>
         </header>
 
-        <div class="main-grid">
-            <div>
-                 <section class="beveled-box carousel-section">
-                     <div class="img-frame">
-                         <img id="carousel-img" src="https://d2w9rnfcy7mm78.cloudfront.net/6431323/original_366950bc1e8702e21c413b0ba4e43fef.jpg?1583967729?bc=0" alt="Gallery">
-                     </div>
-                     <div class="controls">
-                         <button onclick="updateCarousel(-1)">◀</button>
-                         <span id="carousel-counter">1/7</span>
-                         <button onclick="updateCarousel(1)">▶</button>
-                     </div>
-                 </section>
+        <div class="home-layout">
+            <aside class="image-rail beveled-box" id="image-rail" aria-label="Image rail"></aside>
 
-                 <section class="flex-column">
-                     <div class="beveled-box gif-ad-container">
-                         <div class="gif-placeholder">
-                             <img src="https://d2w9rnfcy7mm78.cloudfront.net/29009179/original_9a9e71920be59e4b74b2b17070549f60.gif?1719336017?bc=0" alt="Vintage Ad">
-                         </div>
-                     </div>
+            <main class="home-main">
+                <section class="beveled-box video-player-themed">
+                    <div class="cctv-header">
+                        <div class="playback-icons">▶ || [ ]</div>
+                        <div class="video-status">
+                            NOW PLAYING:<br>
+                            <span class="glitch-text" id="video-title">Episode 8 - SEM</span>
+                        </div>
+                    </div>
 
-                    
-                 </section>
-            </div>
-            <section class="beveled-box video-player-themed">
-              <div class="cctv-header">
-                  <div class="playback-icons">▶ || [ ]</div>
-                  <div class="video-status">
-                      NOW PLAYING:<br>
-                      <span class="glitch-text" id="video-title">Episode 8 - SEM</span>
-                  </div>
-              </div>
-          
-              <div class="monitor-screen">
-                  <div class="iframe-container">
-                      <iframe 
-                      width="560" 
-                      height="315" 
-                      src="https://www.youtube.com/embed/7E7cN5-5jbE?si=0Ck0EZAe-_P1rgSV" 
-                      title="YouTube video player" 
-                      frameborder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                      referrerpolicy="strict-origin-when-cross-origin" 
-                      allowfullscreen></iframe>
-                  </div>
-                  <div class="scanline"></div>
-              </div>
-          
-              <div class="video-footer-nav">
-                  <button class="arrow-btn" onclick="prevVideo()">◀</button>
-                  <span class="desc-text" id="video-desc">Video description and whatnot</span>
-                  <button class="arrow-btn" onclick="nextVideo()">▶</button>
-              </div>
-               <div class="buy-sem-oval">
-                         <a href="#" data-content="sem">Buy SEM</a>
-                     </div>
-          </section>
+                    <div class="monitor-screen">
+                        <div class="iframe-container">
+                            <iframe
+                                src="https://www.youtube.com/embed/7E7cN5-5jbE"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen></iframe>
+                        </div>
+                        <div class="scanline"></div>
+                    </div>
 
-            <section class="beveled-box guestbook-section">
-                <div class="section-header">Guestbook / Confessional</div>
-                <div class="comment-wall" id="guestbook">
-                    <p><span class="user-id">[USER_88]:</span> site looks clean.</p>
-                    <p><span class="user-id">[SYSTEM]:</span> welcoming new terminal...</p>
-                </div>
-            </section>
+                    <div class="video-footer-nav">
+                        <span class="desc-text" id="video-desc">Video description and whatnot</span>
+                    </div>
+                </section>
+
+                <section class="beveled-box chat-room">
+                    <div class="section-header">Chat Room</div>
+                    <div class="comment-wall" id="chat-wall">
+                        <p><span class="user-id">[SYSTEM]:</span> channel open. say something.</p>
+                        <p><span class="user-id">[USER_88]:</span> site looks clean.</p>
+                    </div>
+                    <form class="chat-form" id="chat-form">
+                        <input id="chat-input" type="text" maxlength="240" placeholder="type a message..." autocomplete="off">
+                        <button type="submit">Send</button>
+                    </form>
+                </section>
+            </main>
         </div>
     </div>
 
+    <div id="rail-editor" class="rail-editor" hidden aria-hidden="true">
+        <form id="rail-editor-form" class="rail-editor-panel beveled-box">
+            <h2>Edit left rail images</h2>
+            <p class="rail-editor-help">Paste image URLs for the 5 slots. Saved in this browser.</p>
+            <label>1 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <label>2 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <label>3 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <label>4 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <label>5 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <div class="rail-editor-actions">
+                <button type="button" id="rail-editor-reset">Reset defaults</button>
+                <button type="button" id="rail-editor-cancel">Cancel</button>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+
     <script src="content.js"></script>
-    <script>
-        // Inline Carousel logic if not in content.js
-        const images = [
-            "https://d2w9rnfcy7mm78.cloudfront.net/6431323/original_366950bc1e8702e21c413b0ba4e43fef.jpg?1583967729?bc=0",
-            "https://d2w9rnfcy7mm78.cloudfront.net/16464435/original_66e2f0b19761f8dbed5f09dd84fcbdd1.jpg?1652549774?bc=0",
-            "https://d2w9rnfcy7mm78.cloudfront.net/15648911/original_6f7630be095417f8b28f8ab4bf767b3e.jpg?1647640496?bc=0",
-            "https://d2w9rnfcy7mm78.cloudfront.net/15648938/original_4f724f1842e943858838c5715404ecc9.jpg?1647640668?bc=0",
-            "https://picsum.photos/id/13/400/600",
-            "https://picsum.photos/id/14/400/600",
-            "https://picsum.photos/id/15/400/600",
-        ];
-        let idx = 0;
-        function updateCarousel(dir) {
-            idx = (idx + dir + images.length) % images.length;
-            document.getElementById('carousel-img').src = images[idx];
-            document.getElementById('carousel-counter').innerText = `${idx + 1}/7`;
-        }
-    </script>
 </body>
 </html>
