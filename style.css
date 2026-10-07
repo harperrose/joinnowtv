@@ -126,64 +126,31 @@ img, video, iframe {
     position: fixed;
     inset: 0;
     z-index: 2;
-    display: grid;
-    place-items: center;
     opacity: 0;
-    transform: scale(0.94);
-    transition: opacity 1s ease, transform 1s ease;
-    background:
-        radial-gradient(ellipse 80% 60% at 50% 45%, #1a2030 0%, #05060a 68%, #000 100%);
+    transition: opacity 0.8s ease;
+    background: #000;
 }
 
 #fisheyeStage.is-active {
     opacity: 1;
-    transform: scale(1);
 }
 
-.fisheye-canvas,
-.fisheye-bezel,
-.fisheye-glass {
+.fisheye-canvas {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(92vw, 920px);
-    height: min(58vw, 560px);
-    max-height: 72vh;
-    transform: translate(-50%, -50%);
-}
-
-.fisheye-canvas { z-index: 1; }
-
-.fisheye-glass {
-    z-index: 2;
-    border-radius: 50%;
-    pointer-events: none;
-    background:
-        linear-gradient(155deg,
-          rgba(255, 255, 255, 0.22) 0%,
-          rgba(255, 255, 255, 0.04) 26%,
-          rgba(255, 255, 255, 0.0) 52%,
-          rgba(255, 255, 255, 0.08) 100%);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 -18px 36px rgba(255, 255, 255, 0.05),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-    -webkit-mask-image: radial-gradient(ellipse 92% 86% at 50% 50%, #000 64%, transparent 74%);
-    mask-image: radial-gradient(ellipse 92% 86% at 50% 50%, #000 64%, transparent 74%);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 #fisheyeStage.is-fallback {
     color: #ffb347;
-    font-size: clamp(2rem, 6vw, 4rem);
-    letter-spacing: 0.12em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(2rem, 8vw, 5rem);
+    letter-spacing: 0.08em;
     text-shadow: 0 0 24px #ff8800;
-}
-
-.fisheye-bezel {
-    z-index: 3;
-    overflow: visible;
-    pointer-events: none;
-    filter: drop-shadow(0 22px 50px rgba(0, 0, 0, 0.55));
+    display: grid;
+    place-items: center;
 }
 
 .fixed-item {

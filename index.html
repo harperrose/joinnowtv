@@ -14,24 +14,13 @@
 
 <script src="fisheye.js"></script>
 <script>
-    const HOME = 'dashboard.html';
-
-    function openHome() {
-        if (document.body.classList.contains('opening-home')) return;
-        document.body.classList.add('opening-home');
-        setTimeout(() => { window.location.href = HOME; }, 900);
-    }
-
     document.getElementById('enterSite').addEventListener('click', (e) => {
         e.preventDefault();
-        openHome();
+        document.body.classList.add('opening-home');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
     });
 
     startFisheye({ text: 'JOIN NOW TV' });
-    // Marquee plays, then opens into home (?stay=1 keeps the lens up)
-    if (!new URLSearchParams(location.search).has('stay')) {
-        setTimeout(openHome, 5600);
-    }
 </script>
 
 </body>
