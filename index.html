@@ -28,8 +28,10 @@
     });
 
     startFisheye({ text: 'JOIN NOW TV' });
-    // Marquee plays, then opens into home
-    setTimeout(openHome, 5600);
+    // Marquee plays, then opens into home (?stay=1 keeps the lens up)
+    if (!new URLSearchParams(location.search).has('stay')) {
+        setTimeout(openHome, 5600);
+    }
 </script>
 
 </body>
