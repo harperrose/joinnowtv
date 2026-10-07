@@ -8,32 +8,33 @@
 </head>
 <body class="home-page">
     <div class="dashboard-wrapper">
-        <header class="nav-bar beveled-box">
-            <div class="nav-links">
-                <span class="nav-mark">JOINNOW.TV</span>
-            </div>
-            <h1 class="logo">HOME</h1>
-            <div class="nav-links">
-                <button type="button" class="nav-btn" id="edit-rail-btn">Edit Images</button>
-            </div>
+        <header class="top-media-bar" role="tablist" aria-label="Media types">
+            <button type="button" class="glass-btn media-tab is-active" data-media="video" role="tab" aria-selected="true">Video</button>
+            <button type="button" class="glass-btn media-tab" data-media="audio" role="tab" aria-selected="false">Audio</button>
+            <button type="button" class="glass-btn media-tab" data-media="live" role="tab" aria-selected="false">Live</button>
+            <button type="button" class="glass-btn media-tab" data-media="shop" role="tab" aria-selected="false">Shop</button>
+            <button type="button" class="glass-btn media-tab" data-media="archive" role="tab" aria-selected="false">Archive</button>
+            <div class="top-media-spacer"></div>
+            <button type="button" class="glass-btn" id="edit-rail-btn">Edit Images</button>
         </header>
 
         <div class="home-layout">
-            <aside class="image-rail beveled-box" id="image-rail" aria-label="Image rail"></aside>
+            <aside class="image-rail glass-panel" id="image-rail" aria-label="Image rail"></aside>
 
             <main class="home-main">
-                <section class="beveled-box video-player-themed">
-                    <div class="cctv-header">
-                        <div class="playback-icons">▶ || [ ]</div>
+                <section class="glass-panel video-panel" data-panel="video">
+                    <div class="panel-meta glass-text">
+                        <span class="playback-icons">▶</span>
                         <div class="video-status">
-                            NOW PLAYING:<br>
-                            <span class="glitch-text" id="video-title">Episode 8 - SEM</span>
+                            <span class="meta-label">NOW PLAYING</span>
+                            <span class="glitch-text" id="video-title">Episode 8 — SEM</span>
                         </div>
                     </div>
 
                     <div class="monitor-screen">
                         <div class="iframe-container">
                             <iframe
+                                id="video-frame"
                                 src="https://www.youtube.com/embed/7E7cN5-5jbE"
                                 title="YouTube video player"
                                 frameborder="0"
@@ -41,42 +42,52 @@
                                 referrerpolicy="strict-origin-when-cross-origin"
                                 allowfullscreen></iframe>
                         </div>
-                        <div class="scanline"></div>
                     </div>
 
-                    <div class="video-footer-nav">
-                        <span class="desc-text" id="video-desc">Video description and whatnot</span>
-                    </div>
+                    <p class="desc-text glass-text" id="video-desc">Video description and whatnot</p>
                 </section>
 
-                <section class="beveled-box chat-room">
+                <section class="glass-panel chat-room" data-panel="chat">
                     <div class="section-header">Chat Room</div>
-                    <div class="comment-wall" id="chat-wall">
+                    <div class="comment-wall glass-text" id="chat-wall">
                         <p><span class="user-id">[SYSTEM]:</span> channel open. say something.</p>
                         <p><span class="user-id">[USER_88]:</span> site looks clean.</p>
                     </div>
                     <form class="chat-form" id="chat-form">
-                        <input id="chat-input" type="text" maxlength="240" placeholder="type a message..." autocomplete="off">
-                        <button type="submit">Send</button>
+                        <input class="glass-input" id="chat-input" type="text" maxlength="240" placeholder="type a message..." autocomplete="off">
+                        <button class="glass-btn" type="submit">Send</button>
                     </form>
+                </section>
+
+                <section class="glass-panel media-placeholder" data-panel="audio" hidden>
+                    <div class="glass-text placeholder-copy">Audio deck coming online.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="live" hidden>
+                    <div class="glass-text placeholder-copy">Live feed standby.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="shop" hidden>
+                    <div class="glass-text placeholder-copy">Shop shelf empty — check back.</div>
+                </section>
+                <section class="glass-panel media-placeholder" data-panel="archive" hidden>
+                    <div class="glass-text placeholder-copy">Archive stacks sealed.</div>
                 </section>
             </main>
         </div>
     </div>
 
     <div id="rail-editor" class="rail-editor" hidden aria-hidden="true">
-        <form id="rail-editor-form" class="rail-editor-panel beveled-box">
+        <form id="rail-editor-form" class="rail-editor-panel glass-panel">
             <h2>Edit left rail images</h2>
             <p class="rail-editor-help">Paste image URLs for the 5 slots. Saved in this browser.</p>
-            <label>1 <input data-rail-input type="url" required placeholder="https://..."></label>
-            <label>2 <input data-rail-input type="url" required placeholder="https://..."></label>
-            <label>3 <input data-rail-input type="url" required placeholder="https://..."></label>
-            <label>4 <input data-rail-input type="url" required placeholder="https://..."></label>
-            <label>5 <input data-rail-input type="url" required placeholder="https://..."></label>
+            <label>1 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>2 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>3 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>4 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
+            <label>5 <input class="glass-input" data-rail-input type="url" required placeholder="https://..."></label>
             <div class="rail-editor-actions">
-                <button type="button" id="rail-editor-reset">Reset defaults</button>
-                <button type="button" id="rail-editor-cancel">Cancel</button>
-                <button type="submit">Save</button>
+                <button type="button" class="glass-btn" id="rail-editor-reset">Reset defaults</button>
+                <button type="button" class="glass-btn" id="rail-editor-cancel">Cancel</button>
+                <button type="submit" class="glass-btn">Save</button>
             </div>
         </form>
     </div>

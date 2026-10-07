@@ -15,37 +15,32 @@
     uniform vec2 u_res;
     uniform float u_time;
     uniform float u_scroll;
-    uniform vec2 u_texSize;
 
     float hash(vec2 p) {
       return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
     }
 
-    // Map screen UV through a convex sphere (fisheye / security-mirror look)
     vec2 fisheyeUV(vec2 uv, out float mask, out float rim) {
       vec2 p = uv * 2.0 - 1.0;
-      // Wide horizontal oval
       p.x *= 1.12;
       p.y *= 1.48;
 
       float r = length(p);
       mask = smoothstep(1.02, 0.97, r);
-      rim = smoothstep(0.86, 1.0, r) * mask;
+      rim = smoothstep(0.84, 1.0, r) * mask;
 
       if (r > 1.05) {
         return vec2(-1.0);
       }
 
-      // Barrel / dome: center magnifies, rim compresses
       float z = sqrt(max(1.0 - r * r, 0.0));
       float k = 1.0 / (0.55 + z * 0.9);
       vec2 warped = p * k;
 
       vec2 tex;
-      // Wider horizontal sample so stretched letters stay readable
-      tex.x = warped.x * 0.28 + 0.5 + u_scroll;
-      // Gentler vertical sample — text is drawn short+wide in the atlas
-      tex.y = clamp(warped.y * 0.55 + 0.5, 0.05, 0.95);
+      // Wider horizontal sample — glyphs stay readable when dome stretches up
+      tex.x = warped.x * 0.22 + 0.5 + u_scroll;
+      tex.y = clamp(warped.y * 0.48 + 0.5, 0.08, 0.92);
       return tex;
     }
 
@@ -61,48 +56,44 @@
       }
 
       vec2 p = uv * 2.0 - 1.0;
-      p.x *= 1.15;
-      p.y *= 1.55;
+      p.x *= 1.12;
+      p.y *= 1.48;
       float r = length(p);
       float z = sqrt(max(1.0 - r * r, 0.0));
 
-      // LED grid denser toward rim
-      float cellScale = mix(78.0, 38.0, z);
+      float cellScale = mix(72.0, 36.0, z);
       vec2 gridUV = uv * u_res / u_res.y;
       vec2 cell = fract(gridUV * cellScale);
-      float led = smoothstep(0.48, 0.18, length(cell - 0.5));
+      float led = smoothstep(0.48, 0.16, length(cell - 0.5));
 
-      // Sample scrolling text (manual wrap — texture is CLAMP)
       vec2 sampleUV = vec2(fract(tuv.x), tuv.y);
       vec4 src = texture2D(u_tex, sampleUV);
-      float lit = clamp(max(src.r, max(src.g, src.b)) * 1.5, 0.0, 1.0);
+      float lit = clamp(max(src.r, max(src.g, src.b)) * 1.55, 0.0, 1.0);
 
-      vec3 amberCore = vec3(1.0, 0.95, 0.62);
-      vec3 amberGlow = vec3(1.0, 0.52, 0.05);
+      vec3 amberCore = vec3(1.0, 0.96, 0.7);
+      vec3 amberGlow = vec3(1.0, 0.55, 0.12);
 
-      // Base unlit matrix
-      vec3 col = vec3(0.09, 0.07, 0.04) * led;
+      // Cool glass-tinted matrix under the LEDs
+      vec3 col = vec3(0.08, 0.09, 0.11) * led;
+      col += mix(amberGlow, amberCore, lit) * lit * mix(0.4, 1.0, led) * 1.85;
+      col += amberGlow * lit * 0.5;
 
-      // Lit LEDs + bloom
-      col += mix(amberGlow, amberCore, lit) * lit * mix(0.35, 1.0, led) * 1.8;
-      col += amberGlow * lit * 0.55; // soft bloom bleed past grid
+      // Apple-glass specular sheet across the dome
+      float sheet = pow(max(1.0 - abs(p.y + 0.15) * 1.4, 0.0), 3.0) * 0.16;
+      sheet *= smoothstep(1.0, 0.2, r);
+      vec2 hl = p - vec2(-0.25, -0.55);
+      float spec1 = pow(max(1.0 - length(hl) * 1.05, 0.0), 5.0) * 0.28;
+      vec2 hl2 = p - vec2(0.4, 0.35);
+      float spec2 = pow(max(1.0 - length(hl2) * 1.5, 0.0), 8.0) * 0.1;
+      col += vec3(0.85, 0.9, 1.0) * (sheet + spec1 + spec2);
 
-      // Glass speculars on the dome
-      vec2 hl = p - vec2(-0.15, -0.55);
-      float spec1 = pow(max(1.0 - length(hl) * 1.1, 0.0), 6.0) * 0.2;
-      vec2 hl2 = p - vec2(0.35, 0.4);
-      float spec2 = pow(max(1.0 - length(hl2) * 1.4, 0.0), 8.0) * 0.08;
-      col += vec3(spec1 + spec2);
+      // Soft frosted rim
+      col += vec3(0.75, 0.82, 0.95) * rim * 0.22;
+      col += vec3(0.45, 0.25, 0.08) * rim * lit * 0.35;
 
-      // Inner rim light catch
-      col += vec3(0.4, 0.22, 0.05) * rim * (0.12 + lit * 0.55);
-
-      // Fine grain
-      float g = (hash(uv * u_res + u_time * 40.0) - 0.5) * 0.05;
+      float g = (hash(uv * u_res + u_time * 30.0) - 0.5) * 0.035;
       col += g;
-
-      // Vignette inside the dome
-      col *= mix(1.0, 0.78, smoothstep(0.4, 1.0, r));
+      col *= mix(1.0, 0.82, smoothstep(0.45, 1.0, r));
 
       gl_FragColor = vec4(col, mask);
     }
@@ -139,30 +130,27 @@
     const canvas = document.createElement('canvas');
     const h = 256;
     const ctx = canvas.getContext('2d');
-    // Extra spaces keep glyphs airy when the dome stretches them up
-    const phrase = `${text}     ${text}     ${text}     `;
+    const phrase = `${text}      ${text}      ${text}      `;
 
-    ctx.font = '700 120px "Courier New", Courier, monospace';
-    ctx.letterSpacing = '0.18em';
+    ctx.font = '700 110px "Courier New", Courier, monospace';
     const tw = Math.ceil(ctx.measureText(phrase).width) + 80;
-    // WebGL1 needs POT for reliable sampling
-    canvas.width = nextPow2(Math.max(2048, Math.ceil(tw * 1.55)));
+    // Extra width so stretched-up glyphs stay thick enough to read
+    canvas.width = nextPow2(Math.max(4096, Math.ceil(tw * 1.85)));
     canvas.height = 256;
 
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw short + wide glyphs so vertical fisheye stretch stays legible
     ctx.save();
-    ctx.translate(40, h / 2);
-    ctx.scale(1.55, 0.72);
-    ctx.font = '700 120px "Courier New", Courier, monospace';
-    ctx.letterSpacing = '0.18em';
+    ctx.translate(48, h / 2);
+    // Wider + shorter letterforms → survive vertical fisheye stretch
+    ctx.scale(1.85, 0.62);
+    ctx.font = '700 110px "Courier New", Courier, monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
     ctx.shadowColor = '#ffffff';
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 16;
     ctx.fillText(phrase, 0, 0);
     ctx.shadowBlur = 0;
     ctx.fillText(phrase, 0, 0);
@@ -180,14 +168,16 @@
 
     const defs = document.createElementNS(ns, 'defs');
     defs.innerHTML = `
-      <radialGradient id="bezelGrad" cx="50%" cy="42%" r="55%">
-        <stop offset="0%" stop-color="#2a2a2a"/>
-        <stop offset="70%" stop-color="#111"/>
-        <stop offset="100%" stop-color="#050505"/>
-      </radialGradient>
-      <linearGradient id="topHighlight" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id="glassRing" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
-        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="35%" stop-color="#dfe7f5" stop-opacity="0.22"/>
+        <stop offset="70%" stop-color="#8a94a8" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.3"/>
+      </linearGradient>
+      <linearGradient id="glassEdge" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+        <stop offset="50%" stop-color="#ffffff" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.45"/>
       </linearGradient>
       <clipPath id="lensClip">
         <ellipse cx="500" cy="310" rx="455" ry="268"/>
@@ -195,76 +185,61 @@
     `;
     svg.appendChild(defs);
 
-    // Ring frame only — inner hole stays transparent so the canvas shows through
+    // Frosted glass ring (apple-glass frame)
     const ring = document.createElementNS(ns, 'path');
     ring.setAttribute(
       'd',
       'M500,10 A490,300 0 1,0 500,610 A490,300 0 1,0 500,10 Z M500,42 A455,268 0 1,1 500,578 A455,268 0 1,1 500,42 Z'
     );
-    ring.setAttribute('fill', 'url(#bezelGrad)');
+    ring.setAttribute('fill', 'url(#glassRing)');
     ring.setAttribute('fill-rule', 'evenodd');
+    ring.setAttribute('opacity', '0.92');
     svg.appendChild(ring);
 
-    // Inner lip
     const inner = document.createElementNS(ns, 'ellipse');
     inner.setAttribute('cx', '500');
     inner.setAttribute('cy', '310');
     inner.setAttribute('rx', '455');
     inner.setAttribute('ry', '268');
     inner.setAttribute('fill', 'none');
-    inner.setAttribute('stroke', '#1a1a1a');
-    inner.setAttribute('stroke-width', '6');
+    inner.setAttribute('stroke', 'url(#glassEdge)');
+    inner.setAttribute('stroke-width', '3.5');
     svg.appendChild(inner);
 
-    // Top specular arc
-    const hi = document.createElementNS(ns, 'ellipse');
-    hi.setAttribute('cx', '500');
-    hi.setAttribute('cy', '310');
-    hi.setAttribute('rx', '455');
-    hi.setAttribute('ry', '268');
-    hi.setAttribute('fill', 'none');
-    hi.setAttribute('stroke', 'url(#topHighlight)');
-    hi.setAttribute('stroke-width', '10');
-    hi.setAttribute('opacity', '0.7');
-    svg.appendChild(hi);
+    const outer = document.createElementNS(ns, 'ellipse');
+    outer.setAttribute('cx', '500');
+    outer.setAttribute('cy', '310');
+    outer.setAttribute('rx', '490');
+    outer.setAttribute('ry', '300');
+    outer.setAttribute('fill', 'none');
+    outer.setAttribute('stroke', 'rgba(255,255,255,0.35)');
+    outer.setAttribute('stroke-width', '2');
+    svg.appendChild(outer);
 
-    // Rivets around perimeter
-    const rivetCount = 18;
+    // Soft rivet-like glass dots
+    const rivetCount = 16;
     for (let i = 0; i < rivetCount; i++) {
       const t = (i / rivetCount) * Math.PI * 2;
-      const rx = 472;
-      const ry = 284;
-      const x = 500 + Math.cos(t) * rx;
-      const y = 310 + Math.sin(t) * ry;
-      const g = document.createElementNS(ns, 'g');
+      const x = 500 + Math.cos(t) * 472;
+      const y = 310 + Math.sin(t) * 284;
       const c = document.createElementNS(ns, 'circle');
       c.setAttribute('cx', String(x));
       c.setAttribute('cy', String(y));
-      c.setAttribute('r', '5.5');
-      c.setAttribute('fill', '#3a3a3a');
-      c.setAttribute('stroke', '#777');
-      c.setAttribute('stroke-width', '1.2');
-      const dot = document.createElementNS(ns, 'circle');
-      dot.setAttribute('cx', String(x - 1.2));
-      dot.setAttribute('cy', String(y - 1.2));
-      dot.setAttribute('r', '1.6');
-      dot.setAttribute('fill', '#bbb');
-      g.appendChild(c);
-      g.appendChild(dot);
-      svg.appendChild(g);
+      c.setAttribute('r', '4.2');
+      c.setAttribute('fill', 'rgba(255,255,255,0.45)');
+      c.setAttribute('stroke', 'rgba(255,255,255,0.65)');
+      c.setAttribute('stroke-width', '1');
+      svg.appendChild(c);
     }
 
-    // Thin glass scratch lines
-    const scratches = document.createElementNS(ns, 'g');
-    scratches.setAttribute('clip-path', 'url(#lensClip)');
-    scratches.setAttribute('opacity', '0.12');
-    scratches.innerHTML = `
-      <line x1="220" y1="420" x2="780" y2="390" stroke="#fff" stroke-width="1"/>
-      <line x1="260" y1="450" x2="740" y2="430" stroke="#fff" stroke-width="0.7"/>
-    `;
-    svg.appendChild(scratches);
-
     return svg;
+  }
+
+  function createGlassOverlay() {
+    const el = document.createElement('div');
+    el.className = 'fisheye-glass';
+    el.setAttribute('aria-hidden', 'true');
+    return el;
   }
 
   window.startFisheye = function startFisheye(options = {}) {
@@ -272,12 +247,13 @@
     if (!root) return;
 
     const text = options.text || 'JOIN NOW TV';
+    root.innerHTML = '';
+
     const canvas = document.createElement('canvas');
     canvas.className = 'fisheye-canvas';
     root.appendChild(canvas);
-
-    const bezel = createBezelSVG();
-    root.appendChild(bezel);
+    root.appendChild(createGlassOverlay());
+    root.appendChild(createBezelSVG());
 
     const gl = canvas.getContext('webgl', {
       alpha: true,
@@ -309,7 +285,6 @@
       u_res: gl.getUniformLocation(program, 'u_res'),
       u_time: gl.getUniformLocation(program, 'u_time'),
       u_scroll: gl.getUniformLocation(program, 'u_scroll'),
-      u_texSize: gl.getUniformLocation(program, 'u_texSize'),
     };
 
     const marquee = buildMarqueeTexture(text);
@@ -323,7 +298,6 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, marquee);
     gl.uniform1i(uniforms.u_tex, 0);
-    gl.uniform2f(uniforms.u_texSize, marquee.width, marquee.height);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -348,7 +322,7 @@
     function frame(now) {
       resize();
       const t = (now - t0) / 1000;
-      scroll -= 0.12 * (1 / 60); // marquee speed
+      scroll -= 0.1 * (1 / 60);
       gl.uniform1f(uniforms.u_time, t);
       gl.uniform1f(uniforms.u_scroll, scroll);
       gl.clearColor(0, 0, 0, 0);
@@ -360,8 +334,7 @@
     window.addEventListener('resize', resize);
     resize();
     raf = requestAnimationFrame(frame);
-
-    root.classList.add('is-active');
+    requestAnimationFrame(() => root.classList.add('is-active'));
 
     return () => {
       cancelAnimationFrame(raf);

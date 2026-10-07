@@ -17,7 +17,7 @@ const SITE_DATA = {
     },
     video: {
         embed: "https://www.youtube.com/embed/7E7cN5-5jbE",
-        title: "Episode 8 - SEM",
+        title: "Episode 8 — SEM",
         desc: "Video description and whatnot"
     }
 };
@@ -79,7 +79,17 @@ function applyRailEditor(event) {
 function resetRailImages() {
     localStorage.removeItem(RAIL_KEY);
     renderRail(DEFAULT_RAIL);
-    closeRailEditor();
+    const panel = document.getElementById('rail-editor');
+    const fields = panel.querySelectorAll('[data-rail-input]');
+    fields.forEach((input, i) => { input.value = DEFAULT_RAIL[i]; });
+}
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 function sendChatMessage(event) {
@@ -97,15 +107,32 @@ function sendChatMessage(event) {
     input.value = '';
 }
 
-function escapeHtml(str) {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+function setMediaTab(name) {
+    document.querySelectorAll('.media-tab').forEach((btn) => {
+        const on = btn.dataset.media === name;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+
+    const showVideo = name === 'video';
+    const videoPanel = document.querySelector('[data-panel="video"]');
+    const chatPanel = document.querySelector('[data-panel="chat"]');
+    if (videoPanel) videoPanel.hidden = !showVideo;
+    if (chatPanel) chatPanel.hidden = !showVideo;
+
+    document.querySelectorAll('.media-placeholder').forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== name;
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const title = document.getElementById('video-title');
+    const desc = document.getElementById('video-desc');
+    const frame = document.getElementById('video-frame');
+    if (title) title.textContent = SITE_DATA.video.title;
+    if (desc) desc.textContent = SITE_DATA.video.desc;
+    if (frame) frame.src = SITE_DATA.video.embed;
+
     renderRail(loadRailImages());
 
     const editBtn = document.getElementById('edit-rail-btn');
@@ -122,4 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const chatForm = document.getElementById('chat-form');
     if (chatForm) chatForm.addEventListener('submit', sendChatMessage);
+
+    document.querySelectorAll('.media-tab').forEach((btn) => {
+        btn.addEventListener('click', () => setMediaTab(btn.dataset.media));
+    });
 });

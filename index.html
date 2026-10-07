@@ -1,30 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="//unpkg.com/globe.gl"></script>
     <link rel="stylesheet" href="style.css">
     <title>JOINNOW.TV</title>
 </head>
-<body>
+<body class="landing-page">
 
-<div id="loader">
-    <div class="spinner"></div>
-    <p>LOADING...</p>
-</div>
+<div id="fisheyeStage" aria-hidden="false"></div>
 
-<div id="globeViz"></div>
-
-<div id="fisheyeStage" aria-hidden="true"></div>
-
-<a href="dashboard.html" class="fixed-item beveled-box" id="enterSite">ENTER SITE -></a>
+<a href="dashboard.html" class="fixed-item glass-btn" id="enterSite">ENTER SITE →</a>
 
 <script src="fisheye.js"></script>
 <script>
     const HOME = 'dashboard.html';
 
     function openHome() {
+        if (document.body.classList.contains('opening-home')) return;
         document.body.classList.add('opening-home');
         setTimeout(() => { window.location.href = HOME; }, 900);
     }
@@ -34,29 +27,9 @@
         openHome();
     });
 
-    const myGlobe = Globe()(document.getElementById('globeViz'))
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .backgroundColor('#000000')
-        .onGlobeReady(() => {
-            document.getElementById('loader').classList.add('fade-out');
-            setTimeout(() => document.getElementById('loader').remove(), 1000);
-
-            // Globe first, then fisheye marquee, then open home
-            setTimeout(() => {
-                const stage = document.getElementById('fisheyeStage');
-                stage.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('fisheye-on');
-                startFisheye({ text: 'JOIN NOW TV' });
-
-                setTimeout(openHome, 5200);
-            }, 2200);
-        });
-
-    let angle = 0;
-    setInterval(() => {
-        myGlobe.pointOfView({ lng: angle, lat: 0, altitude: 2.5 }, 0);
-        angle += 0.1;
-    }, 50);
+    startFisheye({ text: 'JOIN NOW TV' });
+    // Marquee plays, then opens into home
+    setTimeout(openHome, 5600);
 </script>
 
 </body>
