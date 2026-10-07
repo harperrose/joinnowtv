@@ -202,7 +202,7 @@
       const ctx = canvas.getContext('2d');
       const img = ctx.createImageData(w, h);
       const out = img.data;
-      scroll -= 0.006;
+      scroll -= 0.0035;
 
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
