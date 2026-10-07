@@ -1,11 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
 :root {
-    --bg-dark: #07080c;
-    --bg-wash: radial-gradient(ellipse 90% 70% at 50% -10%, #2a3142 0%, #0b0d14 55%, #050507 100%);
+    --bg-dark: #000000;
     --accent: #ff7a3c;
     --text: rgba(255, 255, 255, 0.92);
     --text-dim: rgba(255, 255, 255, 0.62);
+    --gap: 10px;
+    --radius: 3px;
+
+    /* Button fill from design stops */
+    --btn-gradient: linear-gradient(
+        135deg,
+        #10152B 0%,
+        #6C7BBD 24%,
+        #010E28 37%,
+        #3C4283 56%,
+        #8F93A2 83%,
+        #130C3A 94%
+    );
 
     /* Apple-style glass */
     --glass-fill: rgba(255, 255, 255, 0.14);
@@ -15,18 +27,14 @@
     --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.45);
     --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
     --glass-blur: blur(28px) saturate(180%);
-    --radius-lg: 22px;
-    --radius-md: 14px;
-    --radius-pill: 999px;
 }
 
 * { box-sizing: border-box; }
 
 body {
-    background: var(--bg-dark);
-    background-image: var(--bg-wash);
+    background: #000;
     color: var(--text);
-    font-family: "IBM Plex Sans", "SF Pro Display", "Segoe UI", sans-serif;
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
     margin: 0;
     min-height: 100vh;
     overflow-x: hidden;
@@ -44,9 +52,9 @@ img, video, iframe {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-stroke-soft);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius);
     box-shadow: var(--glass-shadow), var(--glass-highlight);
-    padding: 14px;
+    padding: var(--gap);
 }
 
 .glass-text {
@@ -54,20 +62,19 @@ img, video, iframe {
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--glass-stroke);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius);
     box-shadow: var(--glass-highlight);
     color: #1a1a1a;
-    padding: 10px 12px;
+    padding: 10px;
 }
 
 .glass-btn {
     appearance: none;
-    background: rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid var(--glass-stroke);
-    border-radius: var(--radius-pill);
-    box-shadow: var(--glass-highlight), 0 6px 18px rgba(0, 0, 0, 0.2);
+    background: var(--btn-gradient);
+    background-size: 140% 140%;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-highlight), 0 4px 14px rgba(0, 0, 0, 0.35);
     color: var(--text);
     cursor: pointer;
     font: 600 0.78rem/1 "IBM Plex Sans", sans-serif;
@@ -75,12 +82,12 @@ img, video, iframe {
     padding: 10px 16px;
     text-decoration: none;
     text-transform: uppercase;
-    transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+    transition: filter 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
 }
 
 .glass-btn:hover {
-    background: rgba(255, 255, 255, 0.34);
-    border-color: rgba(255, 255, 255, 0.55);
+    filter: brightness(1.12);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .glass-btn:active {
@@ -88,9 +95,9 @@ img, video, iframe {
 }
 
 .glass-btn.is-active {
-    background: rgba(255, 255, 255, 0.42);
-    color: #111;
+    filter: brightness(1.2);
     border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--glass-highlight), 0 0 0 1px rgba(143, 147, 162, 0.55);
 }
 
 .glass-input {
@@ -98,10 +105,10 @@ img, video, iframe {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-stroke);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius);
     color: #111;
     font: inherit;
-    padding: 10px 12px;
+    padding: 10px;
     width: 100%;
 }
 
@@ -200,46 +207,50 @@ body.opening-home #enterSite {
 /* —— Home —— */
 .home-page {
     min-height: 100vh;
+    background: #000;
 }
 
 .dashboard-wrapper {
     min-height: 100vh;
-    padding: 16px;
+    padding: var(--gap);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
 }
 
 .top-media-bar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
+    gap: var(--gap);
 }
 
 .top-media-spacer {
     flex: 1;
-    min-width: 8px;
+    min-width: var(--gap);
 }
 
 .home-layout {
     display: grid;
-    grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
-    gap: 14px;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--gap);
     align-items: start;
+    flex: 1;
 }
 
 .image-rail {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: calc(100vh - 96px);
+    gap: var(--gap);
+    max-height: calc(100vh - 60px);
     overflow-y: auto;
-    padding: 10px;
+    padding: var(--gap);
 }
 
 .rail-slot {
     margin: 0;
     position: relative;
-    border-radius: 14px;
+    border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--glass-stroke-soft);
     background: rgba(0, 0, 0, 0.25);
@@ -257,19 +268,17 @@ body.opening-home #enterSite {
     right: 8px;
     bottom: 6px;
     font-size: 0.65rem;
-    color: #111;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 999px;
+    color: #fff;
+    background: var(--btn-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--radius);
     padding: 2px 8px;
 }
 
 .home-main {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--gap);
     min-width: 0;
 }
 
@@ -277,8 +286,8 @@ body.opening-home #enterSite {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
     font-size: 0.85rem;
 }
 
@@ -304,7 +313,7 @@ body.opening-home #enterSite {
 .monitor-screen {
     position: relative;
     background: #000;
-    border-radius: 16px;
+    border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
@@ -326,7 +335,7 @@ body.opening-home #enterSite {
 }
 
 .desc-text {
-    margin: 12px 0 0;
+    margin: var(--gap) 0 0;
     font-size: 0.85rem;
 }
 
@@ -334,12 +343,13 @@ body.opening-home #enterSite {
     display: flex;
     flex-direction: column;
     min-height: 280px;
+    gap: var(--gap);
 }
 
 .section-header {
     font-weight: 600;
     letter-spacing: 0.14em;
-    margin-bottom: 10px;
+    margin: 0;
     color: var(--text);
     text-transform: uppercase;
     font-size: 0.78rem;
@@ -355,7 +365,7 @@ body.opening-home #enterSite {
 }
 
 .comment-wall p {
-    margin: 0 0 8px;
+    margin: 0 0 var(--gap);
 }
 
 .user-id {
@@ -365,8 +375,8 @@ body.opening-home #enterSite {
 
 .chat-form {
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
+    gap: var(--gap);
+    margin: 0;
 }
 
 .chat-form .glass-input {
@@ -384,12 +394,12 @@ body.opening-home #enterSite {
     position: fixed;
     inset: 0;
     z-index: 2000;
-    background: rgba(8, 10, 16, 0.55);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     display: grid;
     place-items: center;
-    padding: 16px;
+    padding: var(--gap);
 }
 
 .rail-editor[hidden] {
@@ -400,7 +410,7 @@ body.opening-home #enterSite {
     width: min(560px, 100%);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap);
 }
 
 .rail-editor-panel h2 {
@@ -418,7 +428,7 @@ body.opening-home #enterSite {
 .rail-editor-panel label {
     display: grid;
     grid-template-columns: 1.5rem 1fr;
-    gap: 8px;
+    gap: var(--gap);
     align-items: center;
     font-size: 0.85rem;
 }
@@ -426,9 +436,8 @@ body.opening-home #enterSite {
 .rail-editor-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--gap);
     justify-content: flex-end;
-    margin-top: 4px;
 }
 
 @media (max-width: 800px) {
