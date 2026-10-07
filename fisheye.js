@@ -20,11 +20,10 @@
       return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
     }
 
-    // Oval touches top/bottom of the viewport; wide enough to fill sides too
+    // Oval touches top/bottom; FOV tight enough for one phrase at a time
     vec2 fisheyeUV(vec2 uv, out float mask) {
       vec2 p = uv * 2.0 - 1.0;
       float aspect = u_res.x / max(u_res.y, 1.0);
-      // Vertical: full height. Horizontal: scale so oval reaches left/right on typical screens
       p.x *= max(aspect * 0.42, 0.55);
       p.y *= 0.98;
 
@@ -40,9 +39,10 @@
       vec2 warped = p * k;
 
       vec2 tex;
-      // Dense looping sample — text packs across the dome
-      tex.x = warped.x * 0.55 + 0.5 + u_scroll;
-      tex.y = clamp(warped.y * 0.72 + 0.5, 0.02, 0.98);
+      // Narrow X so only one JOIN NOW fits in the lens
+      tex.x = warped.x * 0.18 + 0.5 + u_scroll;
+      // Tall Y — text top stretches toward top of screen
+      tex.y = clamp(warped.y * 1.05 + 0.5, 0.0, 1.0);
       return tex;
     }
 
@@ -61,31 +61,26 @@
       p.x *= max(aspect * 0.42, 0.55);
       p.y *= 0.98;
       float r = length(p);
-      float z = sqrt(max(1.0 - r * r, 0.0));
-
-      float cellScale = mix(90.0, 48.0, z);
-      vec2 gridUV = uv * u_res / u_res.y;
-      vec2 cell = fract(gridUV * cellScale);
-      float led = smoothstep(0.46, 0.14, length(cell - 0.5));
 
       vec2 sampleUV = vec2(fract(tuv.x), tuv.y);
       vec4 src = texture2D(u_tex, sampleUV);
-      float lit = clamp(max(src.r, max(src.g, src.b)) * 1.45, 0.0, 1.0);
+      float lit = clamp(max(src.r, max(src.g, src.b)) * 1.35, 0.0, 1.0);
 
       vec3 amberCore = vec3(1.0, 0.96, 0.72);
       vec3 amberGlow = vec3(1.0, 0.55, 0.12);
 
-      vec3 col = vec3(0.07, 0.07, 0.08) * led;
-      col += mix(amberGlow, amberCore, lit) * lit * mix(0.35, 1.0, led) * 1.9;
-      col += amberGlow * lit * 0.45;
+      // Smooth fill + soft bloom — no LED / halftone grid
+      vec3 col = mix(amberGlow, amberCore, lit) * lit;
+      col += amberGlow * lit * 0.35;
 
-      float sheet = pow(max(1.0 - abs(p.y + 0.1) * 1.2, 0.0), 3.0) * 0.12;
+      float sheet = pow(max(1.0 - abs(p.y + 0.1) * 1.2, 0.0), 3.0) * 0.08;
       sheet *= smoothstep(1.0, 0.15, r);
       col += vec3(0.85, 0.9, 1.0) * sheet;
 
-      float g = (hash(uv * u_res + u_time * 30.0) - 0.5) * 0.03;
+      // Fine film grain only (sub-pixel / ~1px feel)
+      float g = (hash(uv * u_res + u_time * 28.0) - 0.5) * 0.055;
       col += g;
-      col *= mix(1.0, 0.85, smoothstep(0.5, 1.0, r));
+      col *= mix(1.0, 0.88, smoothstep(0.55, 1.0, r));
 
       gl_FragColor = vec4(col, mask);
     }
@@ -122,31 +117,40 @@
     const canvas = document.createElement('canvas');
     const h = 512;
     const ctx = canvas.getContext('2d');
-    // Repeat so the dome is packed with looping copy
-    const phrase = `${text}   ${text}   ${text}   ${text}   ${text}   `;
+    const phrase = text.trim();
 
-    ctx.font = '700 220px Arial, Helvetica, sans-serif';
-    const tw = Math.ceil(ctx.measureText(phrase).width) + 64;
-    canvas.width = nextPow2(Math.max(4096, tw));
+    ctx.font = '700 280px Arial, Helvetica, sans-serif';
+    const tw = Math.ceil(ctx.measureText(phrase).width);
+    // Wide gap after the phrase so the next loop copy isn't visible yet
+    const gap = Math.ceil(tw * 2.4);
+    const unit = tw + gap;
+    canvas.width = nextPow2(Math.max(2048, unit));
     canvas.height = h;
 
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.save();
-    ctx.translate(32, h / 2);
-    // Slightly wide glyphs so stretch stays readable
-    ctx.scale(1.35, 0.9);
-    ctx.font = '700 220px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = '#ffffff';
-    ctx.shadowBlur = 20;
-    ctx.fillText(phrase, 0, 0);
-    ctx.shadowBlur = 0;
-    ctx.fillText(phrase, 0, 0);
-    ctx.restore();
+    // Tall glyphs — top of letters maps toward top of the dome
+    const drawOne = (x) => {
+      ctx.save();
+      ctx.translate(x, h / 2);
+      ctx.scale(1.05, 1.55);
+      ctx.font = '700 280px Arial, Helvetica, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(255,255,255,0.7)';
+      ctx.shadowBlur = 14;
+      ctx.fillText(phrase, 0, 0);
+      ctx.shadowBlur = 0;
+      ctx.fillText(phrase, 0, 0);
+      ctx.restore();
+    };
+
+    // Tile once across the atlas for seamless scroll (only one in view at a time)
+    for (let x = 40; x < canvas.width; x += unit) {
+      drawOne(x);
+    }
 
     return canvas;
   }
@@ -210,20 +214,15 @@
             out[o + 3] = 0;
             continue;
           }
-          const tu = m.wx * 0.55 + 0.5 + scroll;
-          const tv = Math.min(Math.max(m.wy * 0.72 + 0.5, 0.02), 0.98);
-          const cell = 48 + m.z * 30;
-          const gx = ((uvx * w) / h) * cell;
-          const gy = uvy * cell;
-          const cx = gx - Math.floor(gx) - 0.5;
-          const cy = gy - Math.floor(gy) - 0.5;
-          const led = Math.max(0, 1 - Math.hypot(cx, cy) * 2.5);
+          const tu = m.wx * 0.18 + 0.5 + scroll;
+          const tv = Math.min(Math.max(m.wy * 1.05 + 0.5, 0), 1);
           const lit = sample(tu, tv) / 255;
-          const glow = lit * (0.5 + led * 1.25);
-          const base = 0.07 * led;
-          out[o] = Math.min(255, (base + glow) * 255);
-          out[o + 1] = Math.min(255, (base + glow * (0.55 + lit * 0.4)) * 255);
-          out[o + 2] = Math.min(255, (base * 1.1 + glow * 0.15) * 255);
+          const grain = (Math.sin((uvx * 1243.7 + uvy * 917.3 + scroll * 40) * 12.9898) * 43758.5453) % 1;
+          const g = ((grain < 0 ? grain + 1 : grain) - 0.5) * 0.05;
+          const glow = lit * 1.15;
+          out[o] = Math.min(255, (glow + g) * 255);
+          out[o + 1] = Math.min(255, (glow * (0.55 + lit * 0.4) + g) * 255);
+          out[o + 2] = Math.min(255, (glow * 0.18 + g) * 255);
           out[o + 3] = Math.floor((1 - Math.max(0, (m.r - 0.97) / 0.04)) * 255);
         }
       }
@@ -320,7 +319,7 @@
 
     function frame(now) {
       resize();
-      scroll -= 0.085 * (1 / 60);
+      scroll -= 0.055 * (1 / 60);
       gl.uniform1f(uniforms.u_time, (now - t0) / 1000);
       gl.uniform1f(uniforms.u_scroll, scroll);
       gl.clearColor(0, 0, 0, 0);
