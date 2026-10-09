@@ -306,7 +306,6 @@ img, video, iframe {
 .chat-room {
     display: flex;
     flex-direction: column;
-    min-height: 280px;
     gap: var(--gap);
 }
 
@@ -319,33 +318,24 @@ img, video, iframe {
     font-size: 0.78rem;
 }
 
-.comment-wall {
-    flex: 1;
-    min-height: 160px;
-    max-height: 280px;
-    overflow-y: auto;
-    font-size: 0.9rem;
-    line-height: 1.5;
+.chitchatter-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: min(800px, 70vh);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--glass-stroke-soft);
+    background: #000;
 }
 
-.comment-wall p {
-    margin: 0 0 var(--gap);
-}
-
-.user-id {
-    color: #7a2e00;
-    font-weight: 600;
-}
-
-.chat-form {
-    display: flex;
-    gap: var(--gap);
-    margin: 0;
-}
-
-.chat-form .glass-input {
-    flex: 1;
-    min-width: 0;
+.chitchatter-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    max-width: none;
 }
 
 .media-placeholder .placeholder-copy {

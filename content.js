@@ -84,29 +84,6 @@ function resetRailImages() {
     fields.forEach((input, i) => { input.value = DEFAULT_RAIL[i]; });
 }
 
-function escapeHtml(str) {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function sendChatMessage(event) {
-    event.preventDefault();
-    const input = document.getElementById('chat-input');
-    const text = input.value.trim();
-    if (!text) return;
-
-    const wall = document.getElementById('chat-wall');
-    const line = document.createElement('p');
-    const id = String(Math.floor(Math.random() * 90) + 10).padStart(2, '0');
-    line.innerHTML = `<span class="user-id">[USER_${id}]:</span> ${escapeHtml(text)}`;
-    wall.appendChild(line);
-    wall.scrollTop = wall.scrollHeight;
-    input.value = '';
-}
-
 function setMediaTab(name) {
     document.querySelectorAll('.media-tab').forEach((btn) => {
         const on = btn.dataset.media === name;
