@@ -124,9 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const reset = document.getElementById('rail-editor-reset');
     if (reset) reset.addEventListener('click', resetRailImages);
 
-    const chatForm = document.getElementById('chat-form');
-    if (chatForm) chatForm.addEventListener('submit', sendChatMessage);
-
     document.querySelectorAll('.media-tab').forEach((btn) => {
         btn.addEventListener('click', () => setMediaTab(btn.dataset.media));
     });
