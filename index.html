@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//unpkg.com/globe.gl"></script>
     <link rel="stylesheet" href="style.css">
     <title>JOINNOW.TV</title>
 </head>
 <body class="landing-page">
 
-<div id="fisheyeStage" aria-hidden="false"></div>
+<div id="loader">
+    <div class="spinner"></div>
+    <p>LOADING...</p>
+</div>
 
-<a href="dashboard.html" class="fixed-item glass-btn" id="enterSite">ENTER SITE →</a>
+<div id="globeViz"></div>
 
-<script src="fisheye.js"></script>
+<a href="dashboard.html" class="fixed-item glass-btn">ENTER SITE →</a>
+
 <script>
-    document.getElementById('enterSite').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.body.classList.add('opening-home');
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
-    });
+    const myGlobe = Globe()(document.getElementById('globeViz'))
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+        .backgroundColor('#000000')
+        .onGlobeReady(() => {
+            document.getElementById('loader').classList.add('fade-out');
+            setTimeout(() => document.getElementById('loader').remove(), 1000);
+        });
 
-    startFisheye({ text: 'JOIN NOW TV' });
+    let angle = 0;
+    setInterval(() => {
+        myGlobe.pointOfView({ lng: angle, lat: 0, altitude: 2.5 }, 0);
+        angle += 0.1;
+    }, 50);
 </script>
 
 </body>

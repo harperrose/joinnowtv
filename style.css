@@ -116,41 +116,49 @@ img, video, iframe {
     color: rgba(0, 0, 0, 0.45);
 }
 
-/* —— Landing / fisheye —— */
+/* —— Landing / globe —— */
 .landing-page {
     background: #000;
     overflow: hidden;
 }
 
-#fisheyeStage {
+#globeViz {
     position: fixed;
     inset: 0;
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    background: #000;
+    z-index: 1;
 }
 
-#fisheyeStage.is-active {
-    opacity: 1;
-}
-
-.fisheye-canvas {
-    position: absolute;
+#loader {
+    position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
+    background: #000;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 0.12em;
 }
 
-#fisheyeStage.is-fallback {
-    color: #ffb347;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: clamp(2rem, 8vw, 5rem);
-    letter-spacing: 0.08em;
-    text-shadow: 0 0 24px #ff8800;
-    display: grid;
-    place-items: center;
+.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.spinner {
+    width: 42px;
+    height: 42px;
+    border: 3px solid #333;
+    border-top-color: #8F93A2;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin-bottom: 14px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .fixed-item {
@@ -158,16 +166,6 @@ img, video, iframe {
     bottom: 30px;
     right: 30px;
     z-index: 999;
-}
-
-body.opening-home #fisheyeStage {
-    opacity: 0;
-    transition: opacity 0.7s ease;
-}
-
-body.opening-home #enterSite {
-    opacity: 0;
-    pointer-events: none;
 }
 
 /* —— Home —— */
