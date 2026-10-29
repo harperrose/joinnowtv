@@ -193,18 +193,19 @@ img { max-width: 100%; display: block; }
   color: #3a342f;
   min-height: 36px;
 }
-.press-wh {
-  font-family: var(--press);
-  font-style: italic;
-  font-size: 11px;
-  line-height: .95;
-  text-align: center;
+.press-bare {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.04em;
+  color: #3c3632;
 }
-.press-elle {
-  font-family: var(--press);
-  font-weight: 700;
-  letter-spacing: .18em;
-  font-size: 18px;
+.press-ilia {
+  font-family: var(--serif);
+  font-weight: 560;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  color: #3c3632;
 }
 .press-allure {
   font-family: var(--press);
@@ -419,7 +420,7 @@ img { max-width: 100%; display: block; }
 .text-btn { border: 0; background: none; color: #7d756f; padding: 0; font-size: 14px; }
 .routine[data-editing="true"] .product { outline: 1.5px dashed #c7b4f2; outline-offset: -4px; }
 .routine {
-  display: flex; gap: 12px;
+  display: flex; gap: 10px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding-bottom: 8px;
@@ -428,39 +429,24 @@ img { max-width: 100%; display: block; }
 .routine::-webkit-scrollbar { display: none; }
 .product {
   flex: none;
-  width: 156px;
+  width: 136px;
   background: rgba(255,255,255,.88);
   border-radius: 18px;
   padding: 14px 14px 12px;
   scroll-snap-align: start;
 }
-.product-peek { width: 132px; }
-.bottle { height: 118px; display: grid; place-items: center; align-content: center; }
-.bottle-body {
-  width: 46px; height: 72px; border-radius: 8px 8px 12px 12px;
-  display: grid; place-items: center;
-  color: #fff; font-size: 9px; letter-spacing: .02em;
+.product-peek { width: 136px; }
+.pack {
+  height: 118px;
+  display: grid;
+  place-items: center;
 }
-.bottle-cleanse .bottle-body { background: linear-gradient(#7dcea0, #3e9a68); }
-.bottle-cleanse .pump {
-  width: 16px; height: 14px; background: #2f7d52; border-radius: 3px 3px 0 0;
-  display: block; margin: 0 auto -2px; position: relative;
+.pack img {
+  height: 112px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
-.bottle-cleanse .pump::before {
-  content: ""; position: absolute; left: 14px; top: 2px; width: 14px; height: 6px;
-  background: #2f7d52; border-radius: 2px;
-}
-.bottle-hydrate .bottle-body {
-  width: 40px; height: 68px;
-  background: linear-gradient(#d7eef2, #7eb8c4 55%, #2f6f86);
-  border-radius: 6px;
-}
-.bottle-hydrate .dropper {
-  width: 14px; height: 18px; background: #d9dde2; border-radius: 3px 3px 0 0;
-  display: block; margin: 0 auto -1px;
-}
-.bottle-protect .bottle-body { background: linear-gradient(#f7f7f7, #d9d4ea); width: 42px; height: 70px; }
-.bottle-protect .cap { width: 22px; height: 12px; background: #1d1a2a; display: block; margin: 0 auto -1px; border-radius: 2px; }
 .kicker { margin: 8px 0 0; font-size: 10px; letter-spacing: .12em; color: #8d8681; }
 .pname { margin: 2px 0 0; font-weight: 600; font-size: 16px; letter-spacing: -0.03em; line-height: 1.15; }
 .brand { margin: 2px 0 0; color: #8d8681; font-size: 13px; }
