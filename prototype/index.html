@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f3ef">
+  <title>Noli — Ripple prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Fraunces:ital,opsz,wght@0,9..144,560;0,9..144,640&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="pill-mic">
+  <div class="stage">
+    <div class="phone-wrap" id="phone-wrap">
+      <div class="phone" id="phone" data-screen="hero" data-figma-file="8n4tcKruwumfoFbXDCfrby" data-figma-node="8403:2315">
+        <canvas id="glow" width="390" height="844" aria-hidden="true"></canvas>
+
+        <section class="screen screen-hero is-current" data-screen="hero" aria-label="Welcome">
+          <header class="topbar">
+            <button class="icon-btn" type="button" aria-label="Menu">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+            <span class="logo">
+              <svg viewBox="0 0 36 18" width="34" height="17" aria-hidden="true"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18.2" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+              noli
+            </span>
+            <button class="icon-btn" type="button" aria-label="Search">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 16.5 20 20.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+          </header>
+          <div class="hero-photo-wrap">
+            <img class="hero-photo" src="assets/hero.jpg" alt="Smiling woman with long curly hair">
+          </div>
+          <div class="hero-card">
+            <h1>Take charge of<br>your <span class="circled">changing</span><br>skin needs.</h1>
+            <p>Tell us what you’re experiencing to find out what your skin needs now.</p>
+            <button class="btn btn-block" type="button" data-go="sorted">Get started</button>
+            <p class="as-seen">AS SEEN IN</p>
+            <div class="press" aria-label="As seen in bareMinerals, ILIA, and allure">
+              <span class="press-bare">bareMinerals</span>
+              <span class="press-ilia">ILIA</span>
+              <span class="press-allure">allure</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen screen-sorted" data-screen="sorted" aria-label="Get started">
+          <header class="topbar topbar-solo">
+            <span class="logo">
+              <svg viewBox="0 0 36 18" width="34" height="17" aria-hidden="true"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18.2" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+              noli
+            </span>
+          </header>
+          <div class="portrait-oval">
+            <img src="assets/portrait.jpg" alt="Woman with her hair pulled back, in an olive shirt">
+          </div>
+          <div class="copy-block">
+            <h2>Let’s get your skincare sorted.</h2>
+            <p>We’ll explore what’s changing with your skin and why, then build a plan that suits you now.</p>
+            <ol class="steps">
+              <li><span>1</span>Tell us what you’re experiencing</li>
+              <li><span>2</span>Get your skin assessment</li>
+              <li><span>3</span>Meet an expert to build your plan · optional</li>
+            </ol>
+          </div>
+          <button class="btn btn-block dock" type="button" data-go="mirror">Tell us your story</button>
+        </section>
+
+        <section class="screen screen-mirror" data-screen="mirror" aria-label="Common skin changes">
+          <header class="topbar topbar-solo">
+            <span class="logo">
+              <svg viewBox="0 0 36 18" width="34" height="17" aria-hidden="true"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18.2" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+              noli
+            </span>
+          </header>
+          <div class="copy-block tight">
+            <h2>What you see in the mirror can reflect what’s changing inside.</h2>
+            <p>As your hormones shift, your skin can change too.</p>
+          </div>
+          <figure class="mirror-card">
+            <img src="assets/mirror.jpg" alt="Woman in a white visor, laughing">
+            <span class="note note-lines">fine lines</span>
+            <span class="note note-red">redness</span>
+            <span class="note note-dry">dryness</span>
+          </figure>
+          <button class="btn btn-block dock" type="button" data-go="listen">Next</button>
+        </section>
+
+        <section class="screen screen-listen glow-screen" data-screen="listen" aria-label="Listening">
+          <div class="listen-body">
+            <p class="chip" id="listen-chip"><i></i> Listening</p>
+            <h2 id="listen-question">How do you feel about your skin at the moment?</h2>
+            <p class="transcript" id="listen-transcript" aria-live="polite"></p>
+            <p class="voice-note" id="listen-note" role="status"></p>
+          </div>
+          <div class="pill" role="group" aria-label="Voice controls">
+            <button class="pill-btn" type="button" id="listen-close" aria-label="Close">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pill-btn pill-mic-btn" type="button" id="listen-mic" aria-pressed="false" aria-label="Start speaking">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="3.5" width="6" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 11a5.5 5.5 0 0 0 11 0M12 16.5V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pill-btn" type="button" id="glow-toggle" aria-pressed="true" aria-label="Top glow">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="screen screen-mira glow-screen" data-screen="mira" aria-label="Mira">
+          <div class="mira-body">
+            <p class="chip chip-soft"><i></i> Asking a question</p>
+            <div class="mira-copy">
+              <p>Hello, I’m Mira, your digital beauty consultant.</p>
+              <p>I work alongside Fiona, who has 30 years of experience and reviews your plan before you get it.</p>
+              <p>I’ll ask a few questions, one at a time. There are no right or wrong answers.</p>
+              <p class="mira-ask"><strong>Before we get into the details, how do you feel about your skin at the moment?</strong></p>
+            </div>
+            <p class="transcript transcript-mira" id="mira-transcript" aria-live="polite"></p>
+            <p class="voice-note" id="mira-note" role="status"></p>
+          </div>
+          <div class="pill" role="group" aria-label="Voice controls">
+            <button class="pill-btn" type="button" id="mira-close" aria-label="Close">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pill-btn pill-mic-btn" type="button" id="mira-mic" aria-pressed="false" aria-label="Start speaking">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="3.5" width="6" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 11a5.5 5.5 0 0 0 11 0M12 16.5V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pill-btn" type="button" id="mira-glow" aria-pressed="true" aria-label="Top glow">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="screen screen-home glow-screen" data-screen="home" aria-label="Home">
+          <header class="topbar topbar-solo">
+            <span class="logo">
+              <svg viewBox="0 0 36 18" width="34" height="17" aria-hidden="true"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18.2" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+              noli
+            </span>
+          </header>
+          <div class="home-scroll">
+            <p class="date">Tuesday, 12 January</p>
+            <h2 class="greet">Good morning, Sarah</h2>
+            <section class="mood-card" aria-labelledby="mood-title">
+              <h3 id="mood-title">How does your skin feel today?</h3>
+              <div class="moods" role="group" aria-label="How does your skin feel today?">
+                <button type="button" data-mood="low" aria-pressed="false" aria-label="Uncomfortable">
+                  <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#c4a48a"/><circle cx="17" cy="20" r="2.1" fill="#3a312c"/><circle cx="31" cy="20" r="2.1" fill="#3a312c"/><path d="M16 33c2.4-3.2 4.8-4.6 8-4.6s5.6 1.4 8 4.6" fill="none" stroke="#3a312c" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" data-mood="ok" aria-pressed="false" aria-label="Okay">
+                  <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#ead6c2"/><circle cx="17" cy="20" r="2.1" fill="#3a312c"/><circle cx="31" cy="20" r="2.1" fill="#3a312c"/><path d="M16.5 31h15" fill="none" stroke="#3a312c" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" data-mood="good" aria-pressed="false" aria-label="Good">
+                  <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#f3d3c0"/><circle cx="17" cy="20" r="2.1" fill="#3a312c"/><circle cx="31" cy="20" r="2.1" fill="#3a312c"/><path d="M16 28c2.4 3.2 4.8 4.6 8 4.6s5.6-1.4 8-4.6" fill="none" stroke="#3a312c" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" data-mood="great" aria-pressed="true" aria-label="Really good">
+                  <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#dcc8f6"/><circle cx="17" cy="19" r="2.1" fill="#3a312c"/><circle cx="31" cy="19" r="2.1" fill="#3a312c"/><path d="M15 27c2.6 4.4 5.4 6.2 9 6.2s6.4-1.8 9-6.2" fill="none" stroke="#3a312c" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+            </section>
+            <div class="routine-head">
+              <h3>Your morning routine</h3>
+              <button type="button" class="text-btn" id="edit-routine">Edit</button>
+            </div>
+            <div class="routine" id="routine">
+              <article class="product">
+                <div class="pack"><img src="assets/cleanser.jpg" alt="CeraVe Hydrating Cleanser bottle"></div>
+                <p class="kicker">CLEANSE</p>
+                <p class="pname">Hydrating Cleanser</p>
+                <p class="brand">CeraVe</p>
+              </article>
+              <article class="product">
+                <div class="pack"><img src="assets/booster.jpg" alt="Vichy Mineral 89 Booster bottle"></div>
+                <p class="kicker">HYDRATE</p>
+                <p class="pname">Mineral 89 Booster</p>
+                <p class="brand">Vichy</p>
+              </article>
+              <article class="product product-peek">
+                <div class="pack"><img src="assets/protect.jpg" alt="La Roche-Posay Antioxidant 60 bottle"></div>
+                <p class="kicker">PROTECT</p>
+                <p class="pname">Antioxidant 60</p>
+                <p class="brand">La Roche-Posay</p>
+              </article>
+            </div>
+          </div>
+          <form class="ask" id="ask-form">
+            <button class="ask-plus" type="button" id="ask-mira" aria-label="Ask Mira">+</button>
+            <button class="ask-label" type="button" id="ask-label">Ask Mira</button>
+            <button class="ask-mic" type="button" id="home-mic" aria-label="Start speaking">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="3.5" width="6" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 11a5.5 5.5 0 0 0 11 0M12 16.5V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+          </form>
+          <nav class="tabbar" aria-label="Primary">
+            <button type="button" data-tab="home" aria-current="page" aria-label="Home">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-tab="routine" aria-label="Routine">
+              <svg viewBox="0 0 24 24" width="22" height="22"><rect x="6" y="3.5" width="12" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <button type="button" data-tab="mira" aria-label="Mira">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3.2 13.6 9H20l-5 3.8 1.9 6L12 15.2 7.1 18.8 9 12.8 4 9h6.4L12 3.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-tab="you" aria-label="You">
+              <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 19.2c1.4-2.8 3.7-4.2 6.5-4.2s5.1 1.4 6.5 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </nav>
+        </section>
+
+        <p class="sr-only" id="announcement" role="status"></p>
+      </div>
+    </div>
+    <p class="run-note">Tap the microphone and speak. The colour follows your voice.</p>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
